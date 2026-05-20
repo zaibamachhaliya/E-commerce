@@ -453,9 +453,9 @@ document.getElementById(
 );
 
 // =============================
-// ADD TO CART
+// ADD TO CART (Unified with cart.js)
 // =============================
-document.getElementById("add-to-cart-btn").addEventListener("click", () => {
+document.getElementById("add-to-cart-btn").addEventListener("click", async () => {
     const currentVariantStock = productVariants[selectedColor][selectedSize];
     const qty = parseInt(qtyInput.value);
 
@@ -464,7 +464,6 @@ document.getElementById("add-to-cart-btn").addEventListener("click", () => {
         return;
     }
 
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
     const item = {
         id: currentProduct.id,
         name: currentProduct.name,
@@ -475,12 +474,16 @@ document.getElementById("add-to-cart-btn").addEventListener("click", () => {
         qty: qty
     };
 
-    const existing = cart.find(p => p.id === item.id && p.color === item.color && p.size === item.size);
-    if(existing) existing.qty += item.qty;
-    else cart.push(item);
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    showToast("Product added to cart 🛍️");
+    if(typeof addToCartFromProduct === "function"){
+        await addToCartFromProduct(item);
+    } else {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const existing = cart.find(p => p.id === item.id && p.color === item.color && p.size === item.size);
+        if(existing) existing.qty += item.qty;
+        else cart.push(item);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        showToast("Product added to cart 🛍️");
+    }
 });
 
 // =============================

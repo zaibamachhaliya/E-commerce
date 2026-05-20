@@ -1,8 +1,46 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const db = require("../config/db");
-
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// TOKEN GENERATORS
+const generateAccessToken = (user) => {
+    return jwt.sign(
+        {
+            id: user.id,
+            role: user.role
+        },
+        process.env.JWT_SECRET || "secretkey",
+        {
+            expiresIn: "15m"
+        }
+    );
+};
+
+const generateRefreshToken = () => {
+    return crypto.randomBytes(40).toString("hex");
+};
+
+// =============================
+// TOKEN GENERATORS
+// =============================
+const crypto = require("crypto");
+
+const generateAccessToken = (user) => {
+    return jwt.sign(
+        {
+            id: user.id,
+            role: user.role
+        },
+        process.env.JWT_SECRET || "secretkey",
+        { expiresIn: "15m" } // short-lived access token
+    );
+};
+
+const generateRefreshToken = () => {
+    return crypto.randomBytes(40).toString("hex"); // random refresh token
+};
 
 // SIGNUP
 const signup = async (req, res) => {
@@ -18,8 +56,22 @@ const signup = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid email format" });
     }
 
-    if (password.length < 6) {
-      return res.status(400).json({ success: false, message: "Password must be at least 6 characters" });
+    if (password.length < 8) {
+        return res.status(400).json({
+            success: false,
+            message: "Password must be at least 8 characters"
+        });
+    }
+
+    const strongPasswordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/;
+
+    if (!strongPasswordRegex.test(password)) {
+        return res.status(400).json({
+            success: false,
+            message:
+                "Password must contain uppercase, lowercase, number and special character"
+        });
     }
 
     // CHECK EXISTING USER
@@ -59,17 +111,34 @@ const login = async (req, res) => {
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) return res.status(400).json({ success: false, message: "Invalid credentials" });
 
-      const token = jwt.sign(
-        { id: user.id, role: user.role },
-        process.env.JWT_SECRET || "secretkey",
-        { expiresIn: "7d" }
-      );
+      // GENERATE TOKENS
+      const accessToken =
+          generateAccessToken(user);
 
+      const refreshToken =
+          generateRefreshToken();
+
+      // Save refresh token in DB
+      db.query(
+          "UPDATE users SET refresh_token = ? WHERE id = ?",
+          [refreshToken, user.id],
+          (err) => {
+              if (err) console.error("Failed to save refresh token:", err);
+          }
+      );
       res.status(200).json({
-        success: true,
-        message: "Login successful",
-        token,
-        user: { id: user.id, name: user.name, email: user.email, role: user.role }
+          success: true,
+          message: "Login successful",
+      
+          accessToken,
+          refreshToken,
+      
+          user: {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              role: user.role
+          }
       });
     });
   } catch (error) {
@@ -77,4 +146,47 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { signup, login };
+// REFRESH ACCESS TOKEN
+const refreshAccessToken = async (req, res) => {
+    try {
+        const { refreshToken } =
+            req.body;
+        if (!refreshToken) {
+            return res.status(401).json({
+                success: false,
+                message: "Refresh token required"
+            });
+        }
+
+        // Validate refresh token from DB
+        db.query(
+            "SELECT * FROM users WHERE refresh_token = ?",
+            [refreshToken],
+            (err, result) => {
+                if (err) return res.status(500).json({ success: false, message: err.message });
+                if (!result.length) return res.status(401).json({ success: false, message: "Invalid refresh token" });
+
+                const user = result[0];
+                const newAccessToken = generateAccessToken(user);
+
+                res.status(200).json({
+                    success: true,
+                    accessToken: newAccessToken
+                });
+            }
+        );
+        return; // Prevent executing rest of try block
+        return; // Prevent executing rest of try block
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+module.exports = {
+    signup,
+    login,
+    refreshAccessToken
+};

@@ -1,30 +1,15 @@
 console.log("Cart page loaded successfully!");
 
-// =============================
-// CART DATA
-// =============================
-
-// =============================
 // API BASE URL & GLOBAL STATE
-// =============================
 const API_BASE = "http://localhost:5000/api";
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-const cartContainer =
-    document.getElementById("cart-items");
+const cartContainer = document.getElementById("cart-items");
+const subtotalElement = document.getElementById("subtotal");
+const taxElement = document.getElementById("tax");
+const totalElement = document.getElementById("total");
 
-const subtotalElement =
-    document.getElementById("subtotal");
-
-const taxElement =
-    document.getElementById("tax");
-
-const totalElement =
-    document.getElementById("total");
-
-// =============================
 // RENDER CART (Backend Integration)
-// =============================
 async function renderCart() {
     cartContainer.innerHTML = "";
 
@@ -80,15 +65,13 @@ async function renderCart() {
     attachCartEventListeners();
 }
 
-// =============================
 // CART EVENT LISTENERS
-// =============================
 function attachCartEventListeners() {
     document.querySelectorAll(".increase-qty").forEach(btn => {
         btn.addEventListener("click", (e) => {
             const index = parseInt(e.target.dataset.index);
             cart[index].qty++;
-            localStorage.setItem("cart", JSON.stringify(cart));
+            saveCart();
             renderCart();
         });
     });
@@ -98,7 +81,7 @@ function attachCartEventListeners() {
             const index = parseInt(e.target.dataset.index);
             if(cart[index].qty > 1) cart[index].qty--;
             else cart.splice(index, 1);
-            localStorage.setItem("cart", JSON.stringify(cart));
+            saveCart();
             renderCart();
         });
     });
@@ -107,70 +90,85 @@ function attachCartEventListeners() {
         btn.addEventListener("click", (e) => {
             const index = parseInt(e.target.dataset.index);
             cart.splice(index, 1);
-            localStorage.setItem("cart", JSON.stringify(cart));
+            saveCart();
             renderCart();
         });
     });
 }
 
-// =============================
-// REMOVE ITEM
-// =============================
-function removeItem(index){
-    cart.splice(index, 1);
-    localStorage.setItem(
-        "cart",
-        JSON.stringify(cart)
-    );
-    renderCart();
-}
+// ADD TO CART FROM PRODUCT CARD / PRODUCT PAGE
+async function addToCartFromProduct(product) {
+    const item = {
+        id: product.id,
+        name: product.name,
+        price: parseFloat(product.price),
+        img: product.img || product.image,
+        color: product.color,
+        size: product.size,
+        qty: product.qty || 1
+    };
 
-// =============================
-// QUANTITY CONTROLS
-// =============================
-function increaseQty(index){
-    cart[index].qty++;
-    localStorage.setItem(
-        "cart",
-        JSON.stringify(cart)
-    );
-    renderCart();
-}
+    const existing = cart.find(p => p.id === item.id && p.color === item.color && p.size === item.size);
+    if(existing) existing.qty += item.qty;
+    else cart.push(item);
 
-function decreaseQty(index){
-    if(cart[index].qty > 1){
-        cart[index].qty--;
-    }else{
-        cart.splice(index, 1);
-    }
-    localStorage.setItem(
-        "cart",
-        JSON.stringify(cart)
-    );
-    renderCart();
-}
+    saveCart();
+    showToast("Added to cart 🛍️");
 
-// =============================
-// CHECKOUT
-// =============================
-checkoutBtn.addEventListener("click", async () => {
-    if(cart.length === 0) {
-        showToast("Cart is empty!", "error");
-        return;
+    // Optional: POST to backend for logged-in users
+    const token = localStorage.getItem("token");
+    if(token){
+        try{
+            const res = await fetch(`${API_BASE}/cart/add`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(item)
+            });
+            const data = await res.json();
+            if(data.message === "Token expired"){
+                await refreshTokenAndRetry(() => addToCartFromProduct(product));
+            }
+        } catch(err){
+            console.error("Error adding item to backend cart:", err);
+        }
     }
 
-    // Optional: Store shipping
-    localStorage.setItem("shippingCost", 0);
+    // Update cart totals if cart page is open
+    if(document.getElementById("cart-items")){
+        renderCart();
+    }
+}
 
-    // Optionally: POST cart to backend for logged-in users
-    // await fetch(`${API_BASE}/cart/checkout`, { method: "POST", body: JSON.stringify(cart) });
+// SAVE CART
+function saveCart(){
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
 
-    window.location.href = "checkout.html";
-});
+// REFRESH TOKEN HELPER
+async function refreshTokenAndRetry(callback){
+    const refreshToken = localStorage.getItem("refreshToken");
+    if(!refreshToken) return;
 
-// =============================
+    try {
+        const res = await fetch(`${API_BASE}/auth/refresh-token`, {
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body: JSON.stringify({refreshToken})
+        });
+        const data = await res.json();
+        if(data.accessToken){
+            localStorage.setItem("token", data.accessToken);
+            callback(); // retry original request
+        }
+    } catch(err){
+        console.error("Error refreshing token:", err);
+    }
+}
+
 // INITIALIZATION
-// =============================
 document.addEventListener("DOMContentLoaded", () => {
     renderCart();
 });
