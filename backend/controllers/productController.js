@@ -1,9 +1,7 @@
 const db =
     require("../config/db");
 
-// =============================
 // GET ALL PRODUCTS
-// =============================
 const getProducts =
     (req, res) => {
         const query =
@@ -14,7 +12,7 @@ const getProducts =
                 if(error){
                     return res.status(500).json({
                         success: false,
-                        error
+                        message: error.message
                     });
                 }
                 res.status(200).json({
@@ -25,9 +23,7 @@ const getProducts =
         );
     };
 
-// =============================
 // GET SINGLE PRODUCT
-// =============================
 const getSingleProduct =
     (req, res) => {
         const { id } =
@@ -39,10 +35,7 @@ const getSingleProduct =
             [id],
             (error, results) => {
                 if(error){
-                    return res.status(500).json({
-                        success: false,
-                        error
-                    });
+                    return res.status(500).json({ success: false, message: error.message });
                 }
                 if(results.length === 0){
                     return res.status(404).json({
@@ -59,44 +52,21 @@ const getSingleProduct =
         );
     };
 
-// =============================
 // CREATE PRODUCT
-// =============================
 const createProduct =
     (req, res) => {
-        const {
-            name,
-            description,
-            price,
-            image,
-            category,
-            stock,
-            featured
-
-        } = req.body;
+        const { name, description, price, image, category, stock, featured } = req.body;
         if(
             !name ||
             price === undefined
         ){
-            return res.status(400).json({
-                success: false,
-                message:
-                    "Name and price are required"
-            });
+            return res.status(400).json({success: false,message:"Name and price are required"});
         }
 
         const query =
             `
             INSERT INTO products
-            (
-                name,
-                description,
-                price,
-                image,
-                category,
-                stock,
-                featured
-            )
+            (name, description, price, image, category, stock, featured)
             VALUES (?, ?, ?, ?, ?, ?, ?)
             `;
 
@@ -115,7 +85,7 @@ const createProduct =
                 if(error){
                     return res.status(500).json({
                         success: false,
-                        error
+                        message: error.message
                     });
                 }
                 res.status(201).json({
@@ -129,51 +99,23 @@ const createProduct =
         );
     };
 
-// =============================
 // UPDATE PRODUCT
-// =============================
 const updateProduct =
     (req, res) => {
         const { id } =
             req.params;
-        const {
-            name,
-            description,
-            price,
-            image,
-            category,
-            stock,
-            featured
-        } = req.body;
+        const { name, description, price, image, category, stock, featured } = req.body;
         if(
             !name ||
             price === undefined
         ){
-            return res.status(400).json({
-                success: false,
-                message:
-                    "Name and price are required"
-            });
+            return res.status(400).json({success: false,message:"Name and price are required"});
         }
         if(
             isNaN(price) ||
             price <= 0
         ){
-            return res.status(400).json({
-                success: false,
-                message:
-                    "Invalid product price"
-            });
-        }
-        if(
-            isNaN(price) ||
-            price <= 0
-        ){
-            return res.status(400).json({
-                success: false,
-                message:
-                    "Invalid product price"
-            });
+            return res.status(400).json({success: false,message:"Invalid product price"});
         }
 
         const query =
@@ -206,7 +148,7 @@ const updateProduct =
                 if(error){
                     return res.status(500).json({
                         success: false,
-                        error
+                        message: error.message
                     });
                 }
                 res.status(200).json({
@@ -218,9 +160,7 @@ const updateProduct =
         );
     };
 
-// =============================
 // DELETE PRODUCT
-// =============================
 const deleteProduct =
     (req, res) => {
         const { id } =
@@ -234,7 +174,7 @@ const deleteProduct =
                 if(error){
                     return res.status(500).json({
                         success: false,
-                        error
+                        message: error.message
                     });
                 }
                 res.status(200).json({
@@ -246,9 +186,7 @@ const deleteProduct =
         );
     };
 
-// =============================
 // EXPORTS
-// =============================
 module.exports = {
     getProducts,
     getSingleProduct,

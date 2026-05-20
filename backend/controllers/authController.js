@@ -10,39 +10,21 @@ const db =
 const emailRegex =
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// =============================
-// SIGNUP
-// =============================
+// Signup
 const signup =
     async (req, res) => {
         try{
-            const {
-                name,
-                email,
-                password
-            } = req.body;
+            const {name,email,password} = req.body;
 
-            // =============================
             // VALIDATION
-            // =============================
-            if(
-                !name ||
-                !email ||
-                !password
-            ){
-                return res.status(400).json({  
-                    success: false,
-                    message:
-                        "All fields are required"
-                });
-            }
-            if(
+            if(!name ||!email ||!password){
+                return res.status(400).json({ success: false, message: "All fields are required" });
+            }if(
                 !emailRegex.test(email)
             ){            
                 return res.status(400).json({
                     success: false,
-                    message:
-                        "Invalid email format"                
+                    message:"Invalid email format"                
                 });
             }
             if(
@@ -50,14 +32,11 @@ const signup =
             ){
                 return res.status(400).json({  
                     success: false,
-                    message:
-                        "Password must be at least 6 characters"
+                    message:"Password must be at least 6 characters"
                 });
             }
 
-            // =============================
             // CHECK EXISTING USER
-            // =============================
             db.query(
                 "SELECT * FROM users WHERE email = ?",
                 [email],
@@ -65,53 +44,41 @@ const signup =
                     if(error){
                         return res.status(500).json({
                             success: false,
-                            message:
-                                error.message
+                            message:error.message
                         });
                     }
                     if(result.length > 0){
                         return res.status(400).json({
                             success: false,
-                            message:
-                                "User already exists"
+                            message:"User already exists"
                         });          
                     }
 
-                    // =============================
                     // HASH PASSWORD
-                    // =============================
                     const hashedPassword =
                         await bcrypt.hash(
                             password,
                             10
                         );
 
-                    // =============================
                     // INSERT USER
-                    // =============================
                     db.query(
                         `
                         INSERT INTO users
                         (name, email, password)
                         VALUES (?, ?, ?)
                         `,
-                        [
-                            name,
-                            email,
-                            hashedPassword
-                        ],
+                        [name,email,hashedPassword],
                         (error, result) => {
                             if(error){
                                 return res.status(500).json({
                                     success: false,
-                                    message:
-                                        error.message
+                                    message:error.message
                                 });
                             }
                             res.status(201).json({
                                 success: true,
-                                message:
-                                    "User registered successfully"
+                                message:"User registered successfully"
                             });
                         }
                     );
@@ -120,22 +87,16 @@ const signup =
         }catch(error){
             res.status(500).json({
                 success: false,
-                message:
-                    error.message
+                message:error.message
             });
         }
     };
 
-// =============================
 // LOGIN
-// =============================
 const login =
     async (req, res) => {
         try{
-            const {
-                email,
-                password
-            } = req.body;
+            const {email,password} = req.body;
             if(
                 !email ||
                 !password
@@ -167,9 +128,7 @@ const login =
                     const user =
                         result[0];
 
-                    // =============================
                     // CHECK PASSWORD
-                    // =============================
                     const isMatch =
                         await bcrypt.compare(
                             password,
@@ -183,9 +142,7 @@ const login =
                         });
                     }
 
-                    // =============================
                     // GENERATE TOKEN
-                    // =============================
                     const token =
                         jwt.sign(
                             {
@@ -227,9 +184,7 @@ const login =
         }
     };
 
-// =============================
 // EXPORTS
-// =============================
 module.exports = {
     signup,
     login
