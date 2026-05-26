@@ -1,3 +1,4 @@
+(function(){
 // cart storage
 let cart =
     AppUtils.getCart();
@@ -236,3 +237,4 @@ window.addToCart =
 
 window.toggleWishlist =
     toggleWishlist;
+})()

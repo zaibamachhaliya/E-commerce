@@ -1,3 +1,4 @@
+(function(){
 // global state
 let allProducts = [];
 
@@ -314,3 +315,4 @@ function initializeProductCardFeatures() {
         }
     );
 }
+})()

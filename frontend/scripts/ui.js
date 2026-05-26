@@ -1,52 +1,66 @@
 // mobile navbar
 function initializeMobileNavbar() {
-    const bar =
-        document.getElementById(
-            "bar"
-        );
+    const bar = document.getElementById("mobile-menu-btn");
+    const closeBtn = document.getElementById("mobile-close-btn");
+    const navLinks = document.getElementById("navbar-links");
+    const authLink = document.getElementById("auth-link");
+    const profileDropdown = document.getElementById("profile-dropdown");
 
-    const navLinks =
-        document.getElementById(
-            "navbar-links"
-        );
-
-    if (
-        !bar
-        ||
-        !navLinks
-    ) {
+    if (!bar || !navLinks) {
+        console.warn("Navbar elements not found!");
         return;
     }
 
-    bar.addEventListener(
-        "click",
-        () => {
-            navLinks.classList.toggle(
-                "active"
-            );
+    // 1. Hamburger Button Click -> Menu Active karo
+    bar.addEventListener("click", (e) => {
+        navLinks.classList.add("active");
+        e.stopPropagation();
+    });
+
+    // 2. Cross Button Click -> Menu Se Active hatao
+    if (closeBtn) {
+        closeBtn.addEventListener("click", (e) => {
+            navLinks.classList.remove("active");
+            e.stopPropagation(); // Event bubble hokar window click trigger nahi karega
+        });
+    }
+
+    // 3. Profile Link Click
+    if (authLink && profileDropdown) {
+        authLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            profileDropdown.classList.toggle("active"); // CSS active ke mutabiq
+        });
+    }
+
+    // 4. Menu ke andar kisi links par click ho toh menu band ho jaye (Cross aur Sign In chhod kar)
+    navLinks.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+            if (link.id === "auth-link") return;
+            navLinks.classList.remove("active");
+        });
+    });
+
+    // 5. Outside Click Auto-Close System
+    window.addEventListener("click", (e) => {
+        // Dropdown band karne ke liye
+        if (profileDropdown && profileDropdown.classList.contains("active") && !profileDropdown.contains(e.target) && e.target !== authLink) {
+            profileDropdown.classList.remove("active");
         }
-    );
-
-    // close menu on link click
-    navLinks
-        .querySelectorAll(
-            "a"
-        )
-        .forEach(
-            (link) => {
-
-                link.addEventListener(
-                    "click",
-                    () => {
-
-                        navLinks.classList.remove(
-                            "active"
-                        );
-                    }
-                );
-            }
-        );
+        
+        // Drawer close karne ke liye (Click close button, hamburger aur main menu ke bahar hona chahiye)
+        if (navLinks.classList.contains("active") && !navLinks.contains(e.target) && !bar.contains(e.target)) {
+            navLinks.classList.remove("active");
+        }
+    });
 }
+
+// Dom content load hone ke halka baad safely run karne ke liye
+setTimeout(() => {
+    initializeMobileNavbar();
+}, 500);
+
 
 // sticky header
 function initializeStickyHeader() {
