@@ -1,3 +1,4 @@
+(() => {
 // CART STATE
 let cart =
     AppUtils.getCart();
@@ -701,3 +702,4 @@ document.addEventListener(
         renderCart();
     }
 );
+})();

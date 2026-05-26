@@ -17,6 +17,11 @@ const authMiddleware =
         "../middleware/authMiddleware"
     );
 
+const db =
+    require(
+        "../config/db"
+    );
+
 // auth status route
 router.get(
     "/status",
@@ -103,6 +108,44 @@ router.post(
         next();
     },
     refreshAccessToken
+);
+
+// logout route
+router.post(
+    "/logout",
+    authMiddleware,
+    async (req, res) => {
+        try {
+            await db.query(
+                `
+                    UPDATE users
+                    SET refresh_token = NULL
+                    WHERE id = ?
+                `,
+                [req.user.id]
+            );
+
+            res.status(200)
+                .json({
+                    success: true,
+                    message:
+                        "Logged out successfully"
+                });
+
+        } catch (error) {
+            console.error(
+                "LOGOUT ERROR:",
+                error
+            );
+
+            res.status(500)
+                .json({
+                    success: false,
+                    message:
+                        "Logout failed"
+                });
+        }
+    }
 );
 
 // current user route

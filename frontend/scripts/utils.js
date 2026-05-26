@@ -188,12 +188,22 @@ const refreshAccessToken =
                 clearAuthData();
                 return null;
             }
-
+            
             localStorage.setItem(
                 "token",
                 data.accessToken
             );
-
+            
+            // save rotated refresh token
+            if (
+                data.refreshToken
+            ) {
+                localStorage.setItem(
+                    "refreshToken",
+                    data.refreshToken
+                );
+            }
+            
             return data.accessToken;
 
         } catch (error) {

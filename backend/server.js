@@ -30,7 +30,7 @@ const PORT =
 
 const FRONTEND_URL =
     process.env.FRONTEND_URL
-    || "http://localhost:5500";
+    || "http://10.132.110.66:5501";
 
 // security
 app.disable(
@@ -41,11 +41,47 @@ app.use(
     helmet()
 );
 
+// allowed frontend origins
+const allowedOrigins = [
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+    "http://localhost:5501",
+    "http://127.0.0.1:5501",
+    "http://10.132.110.66:5501",
+    "http://10.147.216.66:5501"
+];
+
 // cors
 app.use(
     cors({
-        origin:
-            FRONTEND_URL,
+        origin: (
+            origin,
+            callback
+        ) => {
+
+            // allow requests without origin
+            if (!origin) {
+                return callback(
+                    null,
+                    true
+                );
+            }
+
+            if (
+                allowedOrigins.includes(origin)
+            ) {
+                return callback(
+                    null,
+                    true
+                );
+            }
+
+            return callback(
+                new Error(
+                    "CORS not allowed"
+                )
+            );
+        },
 
         methods: [
             "GET",
@@ -238,6 +274,7 @@ process.on(
 // start server
 app.listen(
     PORT,
+    "0.0.0.0",
     () => {
 
         console.log(

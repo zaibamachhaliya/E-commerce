@@ -1,16 +1,40 @@
-// auth protection
-const user =
-    AppUtils.requireAuth();
-if (
-    user
-) {
-    loadUserProfile(
-        user
+/* =============================
+current user
+============================= */
+
+const socialUser =
+    JSON.parse(
+        localStorage.getItem(
+            "socialUser"
+        )
     );
+
+const normalUser =
+    AppUtils.getJSON(
+        "user"
+    );
+
+const currentUser =
+    socialUser || normalUser;
+
+if (!currentUser) {
+
+    window.location.href =
+        "signin.html";
 }
 
-// elements
-const elements = {
+/* =============================
+storage key
+============================= */
+
+const PROFILE_KEY =
+    `profile_${currentUser.email}`;
+
+/* =============================
+elements
+============================= */
+
+const profileElements = {
     sidebarName:
         document.getElementById(
             "sidebar-name"
@@ -19,6 +43,36 @@ const elements = {
     sidebarEmail:
         document.getElementById(
             "sidebar-email"
+        ),
+
+    profilePreview:
+        document.getElementById(
+            "profile-preview"
+        ),
+
+    avatarInput:
+        document.getElementById(
+            "avatar-input"
+        ),
+
+    profileForm:
+        document.getElementById(
+            "profile-form"
+        ),
+
+    profileView:
+        document.getElementById(
+            "profile-view"
+        ),
+
+    profileEdit:
+        document.getElementById(
+            "profile-edit"
+        ),
+
+    editBtn:
+        document.getElementById(
+            "edit-profile-btn"
         ),
 
     profileName:
@@ -46,241 +100,282 @@ const elements = {
             "profile-bio"
         ),
 
-    profilePreview:
+    viewName:
         document.getElementById(
-            "profile-preview"
+            "view-name"
         ),
 
-    profileForm:
+    viewEmail:
         document.getElementById(
-            "profile-form"
+            "view-email"
         ),
 
-    avatarInput:
+    viewPhone:
         document.getElementById(
-            "avatar-input"
+            "view-phone"
+        ),
+
+    viewAddress:
+        document.getElementById(
+            "view-address"
+        ),
+
+    viewBio:
+        document.getElementById(
+            "view-bio"
         )
 };
 
-// safe storage getter
-const getStorageValue = (
-    key
-) => {
-    return (
-        localStorage.getItem(
-            key
-        ) || ""
-    );
-};
+/* =============================
+default avatar
+============================= */
 
-// load profile
-function loadUserProfile(
-    user
+function getDefaultAvatar(
+    name = "User"
 ) {
-    if (
-        elements.sidebarName
-    ) {
-        elements.sidebarName.innerText =
-            user.name || "User";
-    }
 
-    if (
-        elements.sidebarEmail
-    ) {
-        elements.sidebarEmail.innerText =
-            (
-                user.email || ""
-            ).trim();
-    }
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=088178&color=fff`;
+}
 
-    if (
-        elements.profileName
-    ) {
-        elements.profileName.value =
-            getStorageValue(
-                "profileName"
+/* =============================
+view mode
+============================= */
+
+function showViewMode() {
+
+    profileElements.profileView.style.display =
+        "block";
+
+    profileElements.profileEdit.style.display =
+        "none";
+}
+
+/* =============================
+edit mode
+============================= */
+
+function showEditMode() {
+
+    profileElements.profileView.style.display =
+        "none";
+
+    profileElements.profileEdit.style.display =
+        "block";
+}
+
+/* =============================
+load profile
+============================= */
+
+function loadProfile() {
+
+    const savedProfile =
+        AppUtils.getJSON(
+            PROFILE_KEY
+        ) || {};
+
+    const profile = {
+
+        name:
+            savedProfile.name
+            || currentUser.name
+            || "User",
+
+        email:
+            savedProfile.email
+            || currentUser.email
+            || "",
+
+        phone:
+            savedProfile.phone
+            || "",
+
+        address:
+            savedProfile.address
+            || "",
+
+        bio:
+            savedProfile.bio
+            || "",
+
+        avatar:
+            savedProfile.avatar
+            || currentUser.image
+            || currentUser.photoURL
+            || getDefaultAvatar(
+                currentUser.name
             )
-            ||
-            user.name
-            ||
-            "";
-    }
+    };
 
-    if (
-        elements.profileEmail
-    ) {
-        elements.profileEmail.value =
-            user.email || "";
-    }
+    /* sidebar */
 
-    if (
-        elements.profilePhone
-    ) {
-        elements.profilePhone.value =
-            getStorageValue(
-                "profilePhone"
-            );
-    }
+    profileElements.sidebarName.textContent =
+        profile.name;
 
-    if (
-        elements.profileAddress
-    ) {
-        elements.profileAddress.value =
-            getStorageValue(
-                "profileAddress"
-            );
-    }
+    profileElements.sidebarEmail.textContent =
+        profile.email;
 
-    if (
-        elements.profileBio
-    ) {
-        elements.profileBio.value =
-            getStorageValue(
-                "profileBio"
-            );
-    }
+    profileElements.profilePreview.src =
+        profile.avatar;
 
-    const savedAvatar =
-        getStorageValue(
-            "profileAvatar"
+    /* view */
+
+    profileElements.viewName.textContent =
+        profile.name;
+
+    profileElements.viewEmail.textContent =
+        profile.email;
+
+    profileElements.viewPhone.textContent =
+        profile.phone || "-";
+
+    profileElements.viewAddress.textContent =
+        profile.address || "-";
+
+    profileElements.viewBio.textContent =
+        profile.bio || "-";
+
+    /* form */
+    profileElements.profileName.value =
+        profile.name;
+
+    profileElements.profileEmail.value =
+        profile.email;
+
+    profileElements.profilePhone.value =
+        profile.phone;
+
+    profileElements.profileAddress.value =
+        profile.address;
+
+    profileElements.profileBio.value =
+        profile.bio;
+
+    /* mode */
+
+    const hasProfileData =
+
+        savedProfile.name
+        || savedProfile.phone
+        || savedProfile.address
+        || savedProfile.bio;
+
+    if (hasProfileData) {
+
+        showViewMode();
+
+    } else {
+
+        showEditMode();
+    }
+}
+
+/* =============================
+edit profile
+============================= */
+
+elements.editBtn?.addEventListener(
+    "click",
+    () => {
+
+        showEditMode();
+    }
+);
+
+/* =============================
+save profile
+============================= */
+
+elements.profileForm?.addEventListener(
+    "submit",
+    (event) => {
+
+        event.preventDefault();
+
+        const profile = {
+
+            name:
+                elements.profileName.value.trim(),
+
+            email:
+                elements.profileEmail.value.trim(),
+
+            phone:
+                elements.profilePhone.value.trim(),
+
+            address:
+                elements.profileAddress.value.trim(),
+
+            bio:
+                elements.profileBio.value.trim(),
+
+            avatar:
+                elements.profilePreview.src
+        };
+
+        AppUtils.setJSON(
+            PROFILE_KEY,
+            profile
         );
-    if (
-        savedAvatar
-        &&
-        elements.profilePreview
-    ) {
-        elements.profilePreview.src =
-            savedAvatar;
+
+        loadProfile();
+
+        AppUtils.notify(
+            "Profile saved successfully!",
+            "success"
+        );
+
+        setTimeout(
+            () => {
+
+                window.location.href =
+                    "index.html";
+
+            },
+            1000
+        );
     }
-}
+);
 
-// save profile
-if (
-    elements.profileForm
-) {
-    elements.profileForm.addEventListener(
-        "submit",
-        (event) => {
-            event.preventDefault();
-            const name =
-                elements.profileName.value.trim();
-            if (
-                !name
-            ) {
-                AppUtils.notify(
-                    "Name cannot be empty",
-                    "error"
-                );
-                return;
-            }
+/* =============================
+avatar upload
+============================= */
 
-            AppUtils.setJSON(
-                "profileData",
-                {
-                    name,
-                    phone:
-                        elements.profilePhone.value.trim(),
-                    address:
-                        elements.profileAddress.value.trim(),
-                    bio:
-                        elements.profileBio.value.trim()
-                }
-            );
+elements.avatarInput?.addEventListener(
+    "change",
+    (event) => {
 
-            // update sidebar
-            if (
-                elements.sidebarName
-            ) {
-                elements.sidebarName.innerText =
-                    name;
-            }
+        const file =
+            event.target.files?.[0];
 
-            // update stored user
-            const updatedUser = {
-                ...user,
-                name
+        if (!file) {
+            return;
+        }
+
+        const reader =
+            new FileReader();
+
+        reader.onload =
+            (loadEvent) => {
+
+                elements.profilePreview.src =
+                    loadEvent.target.result;
             };
-            AppUtils.setJSON(
-                "user",
-                updatedUser
-            );
-            AppUtils.notify(
-                "Profile updated successfully!",
-                "success"
-            );
-        }
-    );
-}
 
-// avatar upload
-if (
-    elements.avatarInput
-) {
-    elements.avatarInput.addEventListener(
-        "change",
-        (event) => {
-            const file =
-                event.target.files?.[0];
+        reader.readAsDataURL(
+            file
+        );
+    }
+);
 
-            if (
-                !file
-            ) {
-                return;
-            }
+/* =============================
+init
+============================= */
 
-            const allowedTypes = [
-                "image/jpeg",
-                "image/png",
-                "image/webp"
-            ];
-            if (
-                !allowedTypes.includes(
-                    file.type
-                )
-            ) {
-                AppUtils.notify(
-                    "Please upload a valid image",
-                    "error"
-                );
-                return;
-            }
-            const maxSize =
-                2 * 1024 * 1024;
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-            if (
-                file.size > maxSize
-            ) {
-                AppUtils.notify(
-                    "Image must be under 2MB",
-                    "error"
-                );
-                return;
-            }
-
-            const reader =
-                new FileReader();
-            reader.onload =
-                (loadEvent) => {
-                    const image =
-                        loadEvent.target.result;
-                    if (
-                        elements.profilePreview
-                    ) {
-                        elements.profilePreview.src =
-                            image;
-                    }
-                    localStorage.setItem(
-                        "profileAvatar",
-                        image
-                    );
-                    AppUtils.notify(
-                        "Avatar updated successfully!",
-                        "success"
-                    );
-                };
-            reader.readAsDataURL(
-                file
-            );
-        }
-    );
-}
+        loadProfile();
+    }
+);

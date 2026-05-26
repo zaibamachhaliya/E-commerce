@@ -108,71 +108,6 @@
     font-weight: 600;
 }
 
-.pro{
-    width: 23%;
-    min-width: 250px;
-    padding: 12px;
-    border: 1px solid #cce7d0;
-    border-radius: 25px;
-    cursor: pointer;
-    box-shadow: 20px 20px 30px rgba(0,0,0,0.02);
-    margin: 15px 0;
-    transition: 0.3s ease;
-    position: relative;
-    background: #fff;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.pro:hover{
-    box-shadow: 0 12px 35px rgba(0,0,0,0.12);
-    transform: translateY(-6px);
-}
-
-.pro img{
-    width: 100%;
-    height: 280px;
-    object-fit: cover;
-    border-radius: 20px;
-    transition: 0.4s ease;
-}
-
-.pro:hover img{
-    transform: scale(1.04);
-}
-
-.pro .des{
-    text-align: start;
-    padding: 12px 0 70px;
-}
-
-.pro .des span{
-    color: #606063;
-    font-size: 12px;
-}
-
-.pro .des h5{
-    padding-top: 7px;
-    color: #1a1a1a;
-    font-size: 15px;
-    min-height: 42px;
-    line-height: 1.4;
-}
-
-.pro .des i{
-    font-size: 12px;
-    color: rgb(243,181,25);
-}
-
-.pro .des h4{
-    padding-top: 7px;
-    font-size: 15px;
-    font-weight: 700;
-    color: #088178;
-}
-
 .product-card-actions{
     position: absolute;
     bottom: 18px;
@@ -229,11 +164,11 @@
         align-items: stretch;
     }
 
-    .pro{
+    #shop-products .pro{
         width: 100%;
     }
 
-    .pro img{
+    #shop-products .pro img{
         height: 260px;
     }
 }
@@ -278,4 +213,42 @@
         align-items: stretch;
     }
 
+}
+
+#featured-products,
+#new-arrivals-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+@media(max-width:768px){
+
+    #featured-products,
+    #new-arrivals-container{
+        justify-content: center;
+    }
+
+    #shop-products .pro{
+        width: 100%;
+        max-width: 320px;
+    }
+}
+
+#featured-products,
+#new-arrivals-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+@media(max-width:768px){
+
+    #featured-products,
+    #new-arrivals-container{
+        justify-content: center;
+    }
 }

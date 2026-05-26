@@ -25,7 +25,10 @@ if (
             "signin.html";
     }, 1000);
 
-} else {
+    throw new Error(
+        "Unauthorized admin access"
+    );
+}
 
 // elements
 const elements = {
@@ -741,5 +744,3 @@ document.addEventListener(
         loadInitialData();
     }
 );
-
-}

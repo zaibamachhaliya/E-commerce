@@ -293,3 +293,11 @@ footer .copyright {
         align-items: center;
     }
 }
+
+.nav-profile-image{
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #088178;
+}

@@ -41,22 +41,24 @@ function renderProductCard(
     );
 
     card.innerHTML = `
-        <img
-            src="${
-                AppUtils.defaultImage(
-                    product.image
-                )
-            }"
-            alt="${
-                product.name
-            }"
-        >
+        <div class="product-image-wrapper">
+            <img
+                src="${
+                    AppUtils.defaultImage(
+                        product.image
+                    )
+                }"
+                alt="${
+                    product.name
+                }"
+            >
+        </div>
 
         <div class="des">
             <span>
                 ${
                     product.brand
-                    || "Brand"
+                    || "Fashion"
                 }
             </span>
 
@@ -82,15 +84,23 @@ function renderProductCard(
                 }
             </h4>
         </div>
-    `;
 
-    card.addEventListener(
-        "click",
-        () => {
-            window.location.href =
-                `product.html?id=${product.id}`;
-        }
-    );
+        <div class="product-actions">
+            <a
+                href="product.html?id=${product.id}"
+                class="view-btn"
+            >
+                View
+            </a>
+
+            <button
+                class="add-cart-btn"
+                data-id="${product.id}"
+            >
+                Add Cart
+            </button>        
+        </div>
+    `;
 
     container.appendChild(
         card

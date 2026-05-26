@@ -21,6 +21,27 @@ const safeInteger = (value) => {
 
 // get all products
 const getProducts = (req, res) => {
+
+    const page = Math.max(
+        1,
+        safeInteger(req.query.page) || 1
+    );
+
+    const limit = Math.min(
+        50,
+        safeInteger(req.query.limit) || 8
+    );
+
+    const offset =
+        (page - 1) * limit;
+
+    const search =
+        req.query.search
+            ? `%${String(
+                req.query.search
+            ).trim()}%`
+            : null;
+
     let query = `
         SELECT
             id,
@@ -33,11 +54,13 @@ const getProducts = (req, res) => {
             featured
         FROM products
     `;
+
     const params = [];
 
     // category filter
     if (req.query.category) {
         query += " WHERE category = ?";
+
         params.push(
             String(
                 req.query.category
@@ -52,26 +75,59 @@ const getProducts = (req, res) => {
             : " WHERE featured = 1";
     }
 
-    query += " ORDER BY id DESC";
+    // search filter
+    if (search) {
+        query += params.length
+            ? " AND name LIKE ?"
+            : " WHERE name LIKE ?";
 
-    db.query(query, params, (error, results) => {
-        if (error) {
-            console.error(error);
+        params.push(search);
+    }
 
-            return res.status(500).json({
-                success: false,
-                message: "Server error"
-            });
+    query += `
+        ORDER BY id DESC
+        LIMIT ?
+        OFFSET ?
+    `;
+
+    params.push(
+        limit,
+        offset
+    );
+
+    db.query(
+        query,
+        params,
+        (error, results) => {
+
+            if (error) {
+                console.error(error);
+
+                return res.status(500)
+                    .json({
+                        success: false,
+                        message:
+                            "Server error"
+                    });
+            }
+
+            res.status(200)
+                .json({
+                    success: true,
+                    page,
+                    limit,
+                    count:
+                        Array.isArray(results)
+                            ? results.length
+                            : 0,
+
+                    products:
+                        Array.isArray(results)
+                            ? results
+                            : []
+                });
         }
-
-        res.status(200).json({
-            success: true,
-            products:
-                Array.isArray(results)
-                    ? results
-                    : []
-        });
-    });
+    );
 };
 
 // get single product

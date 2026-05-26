@@ -1,9 +1,10 @@
+(() => {
 console.log(
     "Product page loaded successfully!"
 );
 
 // PRODUCT PAGE ELEMENTS
-const elements = {
+const productElements = {
     mainImage:
         document.getElementById(
             "main-product-image"
@@ -129,18 +130,18 @@ function getFallbackProduct() {
             "AnthropicBots",
 
         name:
-            "Modern Fashion T-Shirt",
+            "Nike Hoodie",
 
         category:
-            "T-Shirt",
+            "Fashion",
 
-        price: 999,
+        price: 2999,
 
         image:
-            "assets/images/f1.png",
+            "/assets/images/f1.jpg",
 
         description:
-            "Premium quality cotton t-shirt with breathable fabric and modern fashion styling.",
+            "Premium cotton hoodie with modern fashion styling and comfortable fit.",
 
         stock: 12,
 
@@ -254,21 +255,21 @@ function initializeProductPage() {
         ) <= 0
     ) {
         if (
-            elements.addToCartBtn
+            productElements.addToCartBtn
         ) {
 
-            elements.addToCartBtn.disabled =
+            productElements.addToCartBtn.disabled =
                 true;
 
-            elements.addToCartBtn.innerText =
+            productElements.addToCartBtn.innerText =
                 "Out of Stock";
         }
 
         if (
-            elements.buyNowBtn
+            productElements.buyNowBtn
         ) {
 
-            elements.buyNowBtn.disabled =
+            productElements.buyNowBtn.disabled =
                 true;
         }
     }
@@ -293,14 +294,83 @@ function initializeProductPage() {
         );
     }
 
-    // setup actions
+    // setup cart actions
     if (
-        typeof setCurrentProduct ===
-        "function"
+        productElements.addToCartBtn
     ) {
-        setCurrentProduct(
-            product
-        );
+
+        productElements.addToCartBtn.onclick =
+            () => {
+
+                let cart =
+                    AppUtils.getCart();
+
+                const existing =
+                    cart.find(
+                        item =>
+                            Number(item.id)
+                            === Number(product.id)
+                    );
+
+                if (existing) {
+
+                    existing.qty =
+                        (existing.qty || 1) + 1;
+
+                } else {
+
+                    cart.push({
+                        ...product,
+                        qty: 1
+                    });
+                }
+
+                AppUtils.saveCart(cart);
+
+                AppUtils.notify(
+                    `${product.name} added to cart`,
+                    "success"
+                );
+
+                if (
+                    typeof updateCartCount ===
+                    "function"
+                ) {
+                    updateCartCount();
+                }
+            };
+    }
+
+    // buy now
+    if (
+        productElements.buyNowBtn
+    ) {
+        productElements.buyNowBtn.onclick =
+            () => {
+                let cart =
+                    AppUtils.getCart();
+
+                const existing =
+                    cart.find(
+                        item =>
+                            Number(item.id)
+                            === Number(product.id)
+                    );
+
+                if (existing) {
+                    existing.qty =
+                        (existing.qty || 1) + 1;
+
+                } else {
+                    cart.push({
+                        ...product,
+                        qty: 1
+                    });
+                }
+                AppUtils.saveCart(cart);
+                window.location.href =
+                    "cart.html";
+            };
     }
 
     // load reviews
@@ -331,44 +401,191 @@ function initializeProductPage() {
         loadRecentlyViewedRecommendations();
     }
     initializeImageZoom();
+    initializeProductGallery(product);
+}
+
+// RENDER PRODUCT
+function renderProduct(product) {
+
+    if (!product) {
+        return;
+    }
+
+    // main image
+    if (
+        productElements.mainImage
+    ) {
+        productElements.mainImage.src =
+            product.image ||
+            "/assets/images/f1.jpg";
+
+        productElements.mainImage.onerror =
+            () => {    
+                productElements.mainImage.src =
+                    "/assets/images/f1.jpg";
+            };
+
+        productElements.mainImage.alt =
+            product.name;
+    }
+
+    // category
+    if (
+        productElements.productCategory
+    ) {
+
+        productElements.productCategory.innerText =
+            product.category ||
+            "Fashion";
+    }
+
+    // name
+    if (
+        productElements.productName
+    ) {
+
+        productElements.productName.innerText =
+            product.name ||
+            "Product Name";
+    }
+
+    // price
+    if (
+        productElements.productPrice
+    ) {
+
+        productElements.productPrice.innerText =
+            `₹${Number(
+                product.price || 0
+            ).toFixed(2)}`;
+    }
+
+    // original price
+    if (
+        productElements.productOriginalPrice
+    ) {
+        const productPrice =
+            parseFloat(product.price || 0);
+
+        const originalPrice =
+            productPrice + 1000;
+
+        productElements.productOriginalPrice.innerText =
+            `₹${originalPrice.toFixed(2)}`;
+    }
+
+    // discount
+    if (
+        productElements.productDiscount
+    ) {
+
+        productElements.productDiscount.innerText =
+            "50% OFF";
+    }
+
+    // brand
+    if (
+        productElements.productBrand
+    ) {
+
+        productElements.productBrand.innerText =
+            product.brand ||
+            "Fashion";
+    }
+
+    // description
+    if (
+        productElements.productDescription
+    ) {
+
+        productElements.productDescription.innerText =
+            product.description ||
+            "Premium fashion product.";
+    }
+
+    // page title
+    document.title =
+        `${product.name} | AnthropicBots E-Commerce`;
+    
+        // stock
+    if (
+        productElements.productStock
+    ) {
+
+        productElements.productStock.innerText =
+            Number(product.stock) > 0
+                ? "In Stock"
+                : "Out Of Stock";
+    }
 }
 
 // IMAGE ZOOM
 function initializeImageZoom() {
     if (
-        !elements.mainImage
+        !productElements.mainImage
     ) {
         return;
     }
 
     // avoid duplicate listeners
     if (
-        elements.mainImage.dataset.zoomReady
+        productElements.mainImage.dataset.zoomReady
     ) {
         return;
     }
 
-    elements.mainImage.dataset.zoomReady =
+    productElements.mainImage.dataset.zoomReady =
         "true";
 
-    elements.mainImage.style.transition =
+    productElements.mainImage.style.transition =
         "0.3s ease";
 
-    elements.mainImage.addEventListener(
+    productElements.mainImage.addEventListener(
         "mouseenter",
         () => {
-            elements.mainImage.style.transform =
+            productElements.mainImage.style.transform =
                 "scale(1.05)";
         }
     );
 
-    elements.mainImage.addEventListener(
+    productElements.mainImage.addEventListener(
         "mouseleave",
         () => {
-            elements.mainImage.style.transform =
+            productElements.mainImage.style.transform =
                 "scale(1)";
         }
     );
+}
+
+function initializeProductGallery(product) {
+
+    const thumbnails =
+        document.querySelectorAll(
+            ".small-image"
+        );
+
+    if (!thumbnails.length) {
+        return;
+    }
+
+    thumbnails.forEach((thumb) => {
+
+        thumb.src =
+            product.image ||
+            "/assets/images/f1.jpg";
+
+        thumb.onclick =
+            () => {
+
+                if (
+                    productElements.mainImage
+                ) {
+
+                    productElements.mainImage.src =
+                        thumb.src;
+                }
+            };
+    });
 }
 
 // KEYBOARD ACCESSIBILITY
@@ -391,17 +608,17 @@ document.addEventListener(
         if (
             event.key === "+"
             &&
-            elements.plusBtn
+            productElements.plusBtn
         ) {
-            elements.plusBtn.click();
+            productElements.plusBtn.click();
         }
 
         if (
             event.key === "-"
             &&
-            elements.minusBtn
+            productElements.minusBtn
         ) {
-            elements.minusBtn.click();
+            productElements.minusBtn.click();
         }
     }
 );
@@ -419,3 +636,4 @@ document.addEventListener(
         }
     }
 );
+})();

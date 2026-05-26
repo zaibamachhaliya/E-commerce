@@ -102,7 +102,7 @@
                 <div class="avatar-wrapper">
                     <img
                         id="profile-preview"
-                        src="assets/images/user.png"
+                        src="https://ui-avatars.com/api/?name=User&background=088178&color=fff"
                         alt="Profile Avatar"
                         loading="lazy"
                     >
@@ -128,68 +128,125 @@
 
             <!-- Profile Content -->
             <div class="profile-content">
-                <form id="profile-form">
-                    <div class="form-group">
-                        <label for="profile-name">
-                            Full Name
-                        </label>
-                        <input
-                            type="text"
-                            id="profile-name"
-                            placeholder="Full Name"
-                            autocomplete="name"
+                <!-- Profile View -->
+                <div
+                    id="profile-view"
+                    class="profile-view"
+                >
+                    <div class="profile-info-card">
+                        <h3>
+                            Personal Information
+                        </h3>
+                    
+                        <div class="profile-info-item">
+                            <span>Full Name</span>
+                            <p id="view-name"></p>
+                        </div>
+                    
+                        <div class="profile-info-item">
+                            <span>Email Address</span>
+                            <p id="view-email"></p>
+                        </div>
+                    
+                        <div class="profile-info-item">
+                            <span>Phone Number</span>
+                            <p id="view-phone"></p>
+                        </div>
+                    
+                        <div class="profile-info-item">
+                            <span>Address</span>
+                            <p id="view-address"></p>
+                        </div>
+                    
+                        <div class="profile-info-item">
+                            <span>Bio</span>
+                            <p id="view-bio"></p>
+                        </div>
+                    
+                        <button
+                            id="edit-profile-btn"
+                            class="profile-save-btn"
                         >
+                            <i class="fas fa-edit"></i>
+                            Edit Profile
+                        </button>
                     </div>
-
-                    <div class="form-group">
-                        <label for="profile-email">
-                            Email Address
-                        </label>
-                        <input
-                            type="email"
-                            id="profile-email"
-                            placeholder="Email Address"
-                            autocomplete="email"
-                            disabled
+                </div>
+            
+                <!-- Profile Edit -->
+                <div
+                    id="profile-edit"
+                    class="profile-edit"
+                >
+                    <form id="profile-form">
+                    
+                        <div class="form-group">
+                            <label for="profile-name">
+                                Full Name
+                            </label>
+                        
+                            <input
+                                type="text"
+                                id="profile-name"
+                                placeholder="Full Name"
+                            >
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="profile-email">
+                                Email Address
+                            </label>
+                        
+                            <input
+                                type="email"
+                                id="profile-email"
+                                placeholder="Email Address"
+                            >
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="profile-phone">
+                                Phone Number
+                            </label>
+                        
+                            <input
+                                type="tel"
+                                id="profile-phone"
+                                placeholder="Phone Number"
+                            >
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="profile-address">
+                                Address
+                            </label>
+                        
+                            <textarea
+                                id="profile-address"
+                                placeholder="Address"
+                            ></textarea>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="profile-bio">
+                                Bio
+                            </label>
+                        
+                            <textarea
+                                id="profile-bio"
+                                placeholder="Short Bio"
+                            ></textarea>
+                        </div>
+                    
+                        <button
+                            type="submit"
+                            class="profile-save-btn"
                         >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="profile-phone">
-                            Phone Number
-                        </label>
-                        <input
-                            type="tel"
-                            id="profile-phone"
-                            placeholder="Phone Number"
-                            autocomplete="tel"
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="profile-address">
-                            Address
-                        </label>
-                        <textarea
-                            id="profile-address"
-                            placeholder="Address"
-                            autocomplete="street-address"
-                        ></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="profile-bio">
-                            Bio
-                        </label>
-                        <textarea
-                            id="profile-bio"
-                            placeholder="Short Bio"
-                        ></textarea>
-                    </div>
-                    <button type="submit">
-                        Save Profile
-                    </button>
-                </form>
+                            <i class="fas fa-save"></i>
+                            Save Profile
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </section>

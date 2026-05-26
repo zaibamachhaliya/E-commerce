@@ -1,11 +1,11 @@
 // featured products container
-const featuredContainer =
+const homeFeaturedContainer =
     document.getElementById(
         "featured-products"
     );
 
 // new arrivals container
-const arrivalsContainer =
+const homeArrivalsContainer =
     document.getElementById(
         "new-arrivals-container"
     );
@@ -153,7 +153,7 @@ function renderFeaturedProducts(
     products = []
 ) {
     if (
-        !featuredContainer
+        !homeFeaturedContainer
     ) {
         return;
     }
@@ -164,7 +164,7 @@ function renderFeaturedProducts(
                 product.featured
         );
 
-    featuredContainer.innerHTML =
+    homeFeaturedContainer.innerHTML =
         featured.length
             ? featured
                 .slice(0, 8)
@@ -184,7 +184,7 @@ function renderNewArrivals(
     products = []
 ) {
     if (
-        !arrivalsContainer
+        !homeArrivalsContainer
     ) {
         return;
     }
@@ -194,7 +194,7 @@ function renderNewArrivals(
             .reverse()
             .slice(0, 8);
 
-    arrivalsContainer.innerHTML =
+    homeArrivalsContainer.innerHTML =
         arrivals.length
             ? arrivals
                 .map(

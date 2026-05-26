@@ -7,7 +7,7 @@ let wishlist =
     AppUtils.getWishlist();
 
 // save cart
-function saveCart() {
+function saveHomeCart() {
     AppUtils.saveCart(
         cart
     );
@@ -21,7 +21,7 @@ function saveCart() {
 }
 
 // save wishlist
-function saveWishlist() {
+function saveHomeWishlist() {
     AppUtils.saveWishlist(
         wishlist
     );
@@ -64,7 +64,7 @@ function addToCart(
         });
     }
 
-    saveCart();
+    saveHomeCart();
 
     AppUtils.notify(
         `${product.name} added to cart`,
@@ -115,7 +115,7 @@ function toggleWishlist(
             "success"
         );
     }
-    saveWishlist();
+    saveHomeWishlist();
 }
 
 // get product by id

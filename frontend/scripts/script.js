@@ -7,11 +7,6 @@ const featuredContainer =
         "featured-products"
     );
 
-const adminFeaturedContainer =
-    document.getElementById(
-        "featured-products-container"
-    );
-
 const arrivalsContainer =
     document.getElementById(
         "new-arrivals-container"
@@ -62,29 +57,19 @@ function renderHomepageProducts() {
         return;
     }
 
-    // featured
+    // featured products
     if (
         featuredContainer
     ) {
-        renderProducts(
-            featuredContainer,
-            allProducts.slice(0, 8)
-        );
-    }
-
-    // admin featured
-    if (
-        adminFeaturedContainer
-    ) {
-        const featuredOnly =
+        const featuredProducts =
             allProducts.filter(
                 (product) =>
-                    product.featured
+                    Number(product.featured) === 1
             );
 
         renderProducts(
-            adminFeaturedContainer,
-            featuredOnly.slice(0, 8)
+            featuredContainer,
+            featuredProducts.slice(0, 8)
         );
     }
 
@@ -92,11 +77,15 @@ function renderHomepageProducts() {
     if (
         arrivalsContainer
     ) {
+        const newArrivals =
+            allProducts.filter(
+                (product) =>
+                    Number(product.featured) !== 1
+            );
+
         renderProducts(
             arrivalsContainer,
-            [...allProducts]
-                .reverse()
-                .slice(0, 8)
+            newArrivals.slice(0, 8)
         );
     }
 }
@@ -105,7 +94,6 @@ function renderHomepageProducts() {
 function renderEmptyState() {
     const containers = [
         featuredContainer,
-        adminFeaturedContainer,
         arrivalsContainer
     ];
 

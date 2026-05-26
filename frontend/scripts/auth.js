@@ -48,6 +48,11 @@ const elements = {
     logoutBtn:
         document.getElementById(
             "logout-btn"
+        ),
+
+    googleLogin:
+        document.getElementById(
+            "google-login"
         )
 };
 
@@ -163,6 +168,12 @@ function clearAuthSession() {
     localStorage.removeItem(
         "wishlist"
     );
+
+    localStorage.removeItem(
+        "socialUser"
+    );
+
+    firebase.auth().signOut();
 }
 
 // signup
@@ -398,44 +409,76 @@ if (
 }
 
 // auth ui
-const token =
-    AppUtils.getToken();
 
-if (
-    elements.authLink
-) {
+function initializeAuthUI() {
+    const authLink =
+        document.getElementById(
+            "auth-link"
+        );
+
+    const dropdown =
+        document.getElementById(
+            "profile-dropdown"
+        );
+
+    const logoutBtn =
+        document.getElementById(
+            "logout-btn"
+        );
+
+    if (!authLink) {
+        return;
+    }
+
+    const token =
+        AppUtils.getToken();
+
+    const socialUser =
+        JSON.parse(
+            localStorage.getItem(
+                "socialUser"
+            )
+        );
+
     if (
         token
+        || socialUser
     ) {
-        elements.authLink.innerHTML =
-            `<i class="fas fa-user"></i>`;
+        authLink.innerHTML =
+            socialUser?.image
+                ? `
+                    <img
+                        src="${socialUser.image}"
+                        alt="profile"
+                        class="nav-profile-image"
+                    >
+                  `
 
-        elements.authLink.href =
+                : `<i class="fas fa-user"></i>`;
+
+        authLink.href =
             "#";
 
-        elements.authLink.classList.add(
+        authLink.classList.add(
             "profile-active"
         );
 
-        // open dropdown
-        elements.authLink.addEventListener(
+        authLink.addEventListener(
             "click",
             (event) => {
                 event.preventDefault();
-
-                elements.dropdown?.classList.toggle(
+                dropdown?.classList.toggle(
                     "active"
                 );
             }
         );
 
-        // logout
-        elements.logoutBtn?.addEventListener(
+        logoutBtn?.addEventListener(
             "click",
-            () => {
+            async () => {
                 clearAuthSession();
 
-                elements.dropdown?.classList.remove(
+                dropdown?.classList.remove(
                     "active"
                 );
 
@@ -447,53 +490,88 @@ if (
                 setTimeout(() => {
                     window.location.href =
                         "index.html";
+
                 }, 1000);
             }
         );
-
-        // outside click
-        document.addEventListener(
-            "click",
-            (event) => {
-                if (
-                    !event.target.closest(
-                        ".profile-wrapper"
-                    )
-                ) {
-                    elements.dropdown?.classList.remove(
-                        "active"
-                    );
-                }
-            }
-        );
-
-        // escape close
-        document.addEventListener(
-            "keydown",
-            (event) => {
-                if (
-                    event.key === "Escape"
-                ) {
-                    elements.dropdown?.classList.remove(
-                        "active"
-                    );
-                }
-            }
-        );
-
     } else {
-        elements.authLink.innerHTML =
+        authLink.innerHTML =
             "Sign In";
 
-        elements.authLink.href =
+        authLink.href =
             "signin.html";
 
-        elements.authLink.classList.remove(
+        authLink.classList.remove(
             "profile-active"
         );
 
-        elements.dropdown?.classList.remove(
+        dropdown?.classList.remove(
             "active"
         );
     }
 }
+
+/* wait for navbar components */
+document.addEventListener(
+    "componentsLoaded",
+    () => {
+
+        initializeAuthUI();
+    }
+);
+
+// google login 
+elements.googleLogin?.addEventListener(
+    "click",
+    async () => {
+        try {
+            const result =
+                await auth.signInWithPopup(
+                    googleProvider
+                );
+
+            const user =
+                result.user;
+
+            AppUtils.notify(
+                `Welcome ${user.displayName}!`,
+                "success"
+            );
+
+            localStorage.setItem(
+                "socialUser",
+                JSON.stringify({
+                    name:
+                        user.displayName,
+
+                    email:
+                        user.email,
+
+                    image:
+                        user.photoURL,
+
+                    provider:
+                        "google"
+                })
+            );
+
+            setTimeout(() => {
+                window.location.href =
+                    "index.html";
+
+            }, 1000);
+
+        } catch (error) {
+            console.error(
+                "GOOGLE LOGIN ERROR:",
+                error
+            );
+
+            AppUtils.notify(
+                error.message ||
+                "Google login failed.",
+                "error"
+            );
+        }
+    }
+);

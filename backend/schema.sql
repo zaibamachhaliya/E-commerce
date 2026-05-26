@@ -20,8 +20,15 @@ CREATE TABLE IF NOT EXISTS users (
 
     refresh_token VARCHAR(255),
 
+    is_active TINYINT(1)
+        DEFAULT 1,
+    
     created_at TIMESTAMP
+        DEFAULT CURRENT_TIMESTAMP,
+    
+    updated_at TIMESTAMP
         DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- products table
