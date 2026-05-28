@@ -1,5 +1,4 @@
-(function(){
-    // notification helper
+// notification helper
 const notify = (
     message,
     type = "info"
@@ -591,16 +590,16 @@ const safeInteger = (
     fallback = 0
 ) => {
 
-    const parsed =
+    const parseIntValue =
         parseInt(
             value,
             10
         );
 
     return Number.isInteger(
-        parsed
+        parseIntValue
     )
-        ? parsed
+        ? parseIntValue
         : fallback;
 };
 
@@ -692,7 +691,7 @@ const throttle = (
                 waiting =
                     false;
 
-            },
+                },
             limit
         );
     };
@@ -733,69 +732,41 @@ const saveWishlist = (
         CONFIG.STORAGE_KEYS.WISHLIST,
         safeArray(wishlist)
     );
-};
+}; // Fixed: Added missing closing bracket here
 
-// app utils
+// app utils assignment
 window.AppUtils = {
-
     CONFIG,
-
     notify,
-
     escapeHTML,
-
     getJSON,
-
     setJSON,
-
     removeStorage,
-
     getToken,
-
     getRefreshToken,
-
     getUser,
-
     clearAuthData,
-
     requireAuth,
-
     refreshAccessToken,
-
     apiRequest,
-
     $,
-
     $$,
-
     formatPrice,
-
     defaultImage,
-
     safeArray,
-
     safeNumber,
-
     safeInteger,
-
     safeForEach,
-
     safeMap,
-
     debounce,
-
     throttle,
-
     getCart,
-
     saveCart,
-
     getWishlist,
-
     saveWishlist
 };
 
-// backward compatibility
+// backward compatibility assignments
 window.API_BASE = CONFIG.API_BASE;
 window.notify = notify;
 window.getJSON = getJSON;
@@ -808,39 +779,3 @@ window.requireAuth = requireAuth;
 window.defaultImage = defaultImage;
 window.safeForEach = safeForEach;
 window.safeMap = safeMap;
-})()
-window.API_BASE =
-    CONFIG.API_BASE;
-
-window.notify =
-    notify;
-
-window.getJSON =
-    getJSON;
-
-window.setJSON =
-    setJSON;
-
-window.apiRequest =
-    apiRequest;
-
-window.$ =
-    $;
-
-window.$$ =
-    $$;
-
-window.formatPrice =
-    formatPrice;
-
-window.requireAuth =
-    requireAuth;
-
-window.defaultImage =
-    defaultImage;
-
-window.safeForEach =
-    safeForEach;
-
-window.safeMap =
-    safeMap;

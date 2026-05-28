@@ -1,4 +1,4 @@
-(function(){
+
 // global state
 let allProducts = [];
 
@@ -516,7 +516,7 @@ function initializeProductCardFeatures() {
         }
     );
 }
-})()
+
 
 // navbar auth sync
 function syncNavbarAuth() {

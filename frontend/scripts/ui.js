@@ -14,7 +14,7 @@ function initializeMobileNavbar() {
     // 1. Hamburger Button Click -
     bar.addEventListener("click", (e) => {
         navLinks.classList.add("active");
-        console.log("active")
+   
         e.stopPropagation();    //
     });
 
@@ -58,9 +58,7 @@ function initializeMobileNavbar() {
 }
 
 
-setTimeout(() => {
-    initializeMobileNavbar();
-}, 500);
+
 
 
 // sticky header
