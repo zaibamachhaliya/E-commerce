@@ -209,3 +209,18 @@ product section
 .products-grid .pro{
     flex: 0 0 280px;
 }
+body.dark-theme .pro {
+    background-color: #1e1e1e;
+    border: 1px solid #333 ;
+}
+
+body.dark-theme .pro img {
+    background-color: #2a2a2a;
+}
+
+body.dark-theme .pro .des h5,
+body.dark-theme .pro .des h4,
+body.dark-theme .pro .des span,
+body.dark-theme .pro .des p {
+    color: #e0e0e0 ;
+}

@@ -477,3 +477,119 @@ body.dark-theme #profile-dropdown button {
     color: #ffffff;
     border: none;
 }
+body.dark-theme .pro,
+body.dark-theme .product-card,
+body.dark-theme .card {
+  background-color: #1e1e1e;
+  border: 1px solid #2a2a2a;
+  color: #e0e0e0;
+}
+
+body.dark-theme .pro h4,
+body.dark-theme .pro span {
+  color: #e0e0e0;
+}
+/* ===========================
+   DARK MODE FIXES
+=========================== */
+
+/* Header */
+body.dark-theme #header {
+  background: #1a1a1a;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+/* Desktop nav links */
+body.dark-theme .desktop-nav #navbar-links li a,
+body.dark-theme .desktop-nav #navbar-links li button {
+  color: #e0e0e0;
+}
+
+/* Hamburger lines */
+body.dark-theme .hamburger-line {
+  background: #e0e0e0;
+}
+
+/* Mobile menu overlay */
+body.dark-theme #mobile-menu-overlay {
+  background: linear-gradient(135deg, #1a1a1a 0%, #121212 100%);
+}
+
+body.dark-theme .mobile-menu-header {
+  background: #1e1e1e;
+  border-bottom: 1px solid #333;
+}
+
+body.dark-theme .mobile-link {
+  background: #1e1e1e;
+  color: #e0e0e0;
+  border-color: #333;
+}
+
+body.dark-theme #mobile-close-btn {
+  background: #2a2a2a;
+  border-color: #444;
+}
+
+/* Footer */
+body.dark-theme footer {
+  background: #1a1a1a;
+}
+
+body.dark-theme footer .copyright {
+  border-top: 1px solid #333;
+}
+
+/* Feature boxes */
+body.dark-theme #feature .fe-box {
+  background-color: #1e1e1e;
+  border-color: #333;
+}
+
+body.dark-theme #feature .fe-box h6 {
+  color: #ffffff;
+}
+
+/* Newsletter */
+body.dark-theme #newsletter {
+  background-color: #0d0d0d;
+}
+
+body.dark-theme #newsletter input {
+  background-color: #2a2a2a;
+  color: #ffffff;
+}
+/* Explore More button dark fix */
+body.dark-theme #banner button.normal {
+    background-color: #1e1e1e ;
+    color: #ffffff ;
+    border: 1px solid #444 ;
+}
+body.dark-theme #header .logo-text,
+body.dark-theme #header a {
+    color: #39a4d6 ;
+    filter: brightness(0) invert(1);
+}
+body.dark-theme #header .logo {
+    filter: brightness(0) invert(1) sepia(1) saturate(3) hue-rotate(175deg);
+}
+body.dark-theme .desktop-nav #navbar-links li a.active {
+    border-bottom: none ;
+    text-decoration: none ;
+}
+
+body.dark-theme .desktop-nav #navbar-links li a::after,
+body.dark-theme .desktop-nav #navbar-links li a::before {
+    display: none ;
+}
+#theme-toggle {
+    background: none ;
+    border: none ;
+    cursor: pointer ;
+    font-size: 20px ;
+    padding: 5px ;
+    box-shadow: none ;
+}
+body.dark-theme footer .logo {
+    filter: invert(1) ;
+}
