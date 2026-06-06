@@ -198,6 +198,22 @@ small banners
 /* =============================
 banner3
 ============================= */
+
+.banner-link{
+    text-decoration: none;
+    display: block;
+}
+
+.banner-link h2,
+.banner-link h3,
+.banner-link h4{
+    text-decoration: none;
+}
+
+#banner3 .banner-link{
+    width: 32%;
+}
+
 #banner3{
     display: flex;
     justify-content: space-between;
@@ -206,28 +222,44 @@ banner3
 }
 
 #banner3 .banner-box{
-    text-align: end;
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-start;
-    background-image: url("../assets/images/b7.jpg");
-    min-width: 30%;
-    height: 30vh;
+
+    min-width: 33%;
+    height: 200px;
+
     background-size: cover;
     background-position: center;
-    padding: 20px 20px 0px 20px; 
+    background-repeat: no-repeat;
+
+    padding: 30px;
+    overflow: hidden;
     margin-bottom: 20px;
 }
-#banner3 .banner-box h2,
-#banner3 .banner-box h4 {
-    margin: 0;
-    line-height: 1.1;
-}
-#banner3 .banner-box h4 {
-    margin-top: 2px;
+
+#banner3 .banner-box{
+    background-image: url("../assets/images/b7.jpg");
 }
 
+#banner3 .banner-box h2 {
+    color: #fff;
+    font-size: 1.7rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+    text-decoration: none;
+}
+
+#banner3 .banner-box h4 {
+    color: #ff6b6b;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-top: 10px;
+    text-decoration: none;
+}
 
 #banner3 .banner-box2{
     background-image: url("../assets/images/b4.jpg");
@@ -249,6 +281,7 @@ banner3
     font-weight: 800;
     font-size: 15px;
 }
+
 
 /* =============================
 newsletter
