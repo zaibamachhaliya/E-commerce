@@ -1,112 +1,74 @@
+// ===== THEME - Apply INSTANTLY before anything loads =====
+if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-theme');
+}
+
 // load component
-const loadComponent =
-    async (
-        id,
-        file
-    ) => {
+const loadComponent = async (id, file) => {
+    const element = document.getElementById(id);
 
-        const element =
-            document.getElementById(
-                id
-            );
+    if (!element) {
+        return false;
+    }
 
-        if (
-            !element
-        ) {
-            return false;
+    element.innerHTML = `<div class="component-loading">Loading...</div>`;
+
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => { controller.abort(); }, 8000);
+
+        const response = await fetch(file, { signal: controller.signal });
+
+        clearTimeout(timeout);
+
+        if (!response.ok) {
+            throw new Error(`Failed to load ${file}`);
         }
 
-        element.innerHTML =
-            `
-                <div class="component-loading">
-                    Loading...
-                </div>
-            `;
+        const data = await response.text();
+        element.innerHTML = data;
 
-        try {
-            const controller =
-                new AbortController();
+        return true;
 
-            const timeout =
-                setTimeout(
-                    () => {
-                        controller.abort();
-                    },
-                    8000
-                );
-
-            const response =
-                await fetch(
-                    file,
-                    {
-                        signal:
-                            controller.signal
-                    }
-                );
-
-            clearTimeout(
-                timeout
-            );
-
-            if (
-                !response.ok
-            ) {
-                throw new Error(
-                    `Failed to load ${file}`
-                );
-            }
-
-            const data =
-                await response.text();
-
-            element.innerHTML =
-                data;
-
-            return true;
-
-        } catch (error) {
-            console.error(
-                `Error loading component: ${file}`,
-                error
-            );
-
-            element.innerHTML =
-                `
-                    <div class="component-error">
-                        Failed to load component.
-                    </div>
-                `;
-
-            return false;
-        }
-    };
+    } catch (error) {
+        console.error(`Error loading component: ${file}`, error);
+        element.innerHTML = `<div class="component-error">Failed to load component.</div>`;
+        return false;
+    }
+};
 
 // initialize components
 async function initializeComponents() {
     await Promise.all([
-        loadComponent(
-            "navbar",
-            "components/navbar.html"
-        ),
-
-        loadComponent(
-            "footer",
-            "components/footer.html"
-        )
+        loadComponent("navbar", "components/navbar.html"),
+        loadComponent("footer", "components/footer.html")
     ]);
 
+    // ===== THEME TOGGLE - runs AFTER navbar is loaded =====
+    const themeToggle = document.getElementById('theme-toggle');
+
+    if (themeToggle) {
+        // Set correct icon on load
+        themeToggle.innerHTML = localStorage.getItem('theme') === 'dark' ? '☀️' : '🌙';
+
+        themeToggle.addEventListener('click', function () {
+            document.body.classList.toggle('dark-theme');
+
+            if (document.body.classList.contains('dark-theme')) {
+                localStorage.setItem('theme', 'dark');
+                themeToggle.innerHTML = '☀️';
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeToggle.innerHTML = '🌙';
+            }
+        });
+    }
+
     // notify components ready
-    document.dispatchEvent(
-        new CustomEvent(
-            "componentsLoaded"
-        )
-    );
+    document.dispatchEvent(new CustomEvent("componentsLoaded"));
 }
 
 // init
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-        initializeComponents();
-    }
-);
+document.addEventListener("DOMContentLoaded", () => {
+    initializeComponents();
+});

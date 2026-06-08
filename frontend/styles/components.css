@@ -286,6 +286,7 @@
     flex-direction: column;
     gap: 8px;
     z-index: 1000;
+    background: var(--dropdown-bg, white);
 }
 
 /* desktop hover */
@@ -314,6 +315,7 @@
     font-size: 14px;
     width: 100%;
     min-height: 44px;
+    
 }
 
 #profile-dropdown a:hover,
@@ -592,4 +594,13 @@ body.dark-theme .desktop-nav #navbar-links li a::before {
 }
 body.dark-theme footer .logo {
     filter: invert(1) ;
+}
+body.dark-theme {
+    --dropdown-bg: #0c0c0c;
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+body.dark-theme #profile-dropdown a,
+body.dark-theme #profile-dropdown button{
+    color: #ffffff !important;
+    background-color: transparent !important;
 }
