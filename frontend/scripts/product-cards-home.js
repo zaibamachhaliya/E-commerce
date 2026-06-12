@@ -142,6 +142,15 @@ function createProductCard(
                     >
                         Add Cart
                     </button>
+                    
+                    <button
+                        type="button"
+                        class="wishlist-btn"
+                        data-id="${product.id}"
+                        aria-label="Add to Wishlist"
+                    >
+                        <i class="${ AppUtils.getWishlist().some(item => String(item.id) === String(product.id)) ? 'fas' : 'far' } fa-heart"></i>
+                    </button>
                 </div>
             </div>
         </div>
