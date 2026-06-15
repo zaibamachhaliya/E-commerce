@@ -80,7 +80,7 @@ body.dark-theme #back-to-top:hover {
 }
 
 /* matches @media breakpoint used across style.css */
-@media (max-width: 799px) {
+@media (max-width: 1024px) {
   #back-to-top {
     bottom: 1.25rem;
     right: 1.25rem;

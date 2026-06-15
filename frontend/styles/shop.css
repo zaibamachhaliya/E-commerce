@@ -182,7 +182,7 @@
     display: none;
 }
 
-@media (max-width: 799px){
+@media (max-width: 1024px){
 
     #shop-controls{
         flex-direction: column;
@@ -231,7 +231,7 @@
     outline: none;
 }
 
-@media(max-width:768px){
+@media(max-width:1024px){
 
     .shop-controls{
         flex-direction: column;
@@ -248,7 +248,7 @@
     align-items: flex-start;
 }
 
-@media(max-width:768px){
+@media(max-width:1024px){
 
     #featured-products,
     #new-arrivals-container{
@@ -270,7 +270,7 @@
     align-items: stretch;
 }
 
-@media(max-width:768px){
+@media(max-width:1024px){
 
     #featured-products,
     #new-arrivals-container{

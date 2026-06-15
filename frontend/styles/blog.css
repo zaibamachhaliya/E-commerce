@@ -575,7 +575,7 @@
 }
 
 /* Responsive Breakpoints */
-@media (max-width: 991px) {
+@media (max-width: 1024px) {
     #blog-controls {
         padding: 40px 40px 10px 40px;
     }

@@ -15,10 +15,10 @@ hero section
 }
 #herotexts{
     height:90vh;
-    width:40%;
-    display:flexbox;
+    width:50%;
+    display: flex;
     flex-direction: column;
-    align-content:center;
+    justify-content: center;
     flex-wrap:wrap;
 }
 #hero h2{
@@ -346,7 +346,7 @@ newsletter
 /* =============================
 responsive layout
 ============================= */
-@media(max-width:799px){
+@media(max-width:1024px){
     #hero{
         height: 70vh;
         padding: 0 80px;
