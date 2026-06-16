@@ -165,7 +165,7 @@ async function clearAuthSession() {
 
         // invalidate refresh token
         if (
-            AppUtils.getToken()
+            AppUtils.getUser()
         ) {
 
             await logoutUser();

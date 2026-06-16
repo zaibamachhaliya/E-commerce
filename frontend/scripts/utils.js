@@ -212,7 +212,7 @@ const refreshAccessToken =
                             "Content-Type":
                                 "application/json"
                         },
-
+                        credentials: "include",
                         body: JSON.stringify({})
                     }
                 );
@@ -224,7 +224,7 @@ const refreshAccessToken =
             if (
                 !response.ok
                 ||
-                !data.accessToken
+                !data.success
             ) {
 
                 clearAuthData();
