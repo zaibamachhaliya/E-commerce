@@ -188,3 +188,34 @@
     background: #088178;
     border-color: #088178;
 }
+
+
+body.dark-theme .checkout-form-container,
+body.dark-theme .checkout-summary {
+    background: #1e1e1e;
+    color: #fff;
+}
+
+body.dark-theme .checkout-form-container h2,
+body.dark-theme .checkout-summary h2,
+body.dark-theme .summary-row,
+body.dark-theme .checkout-item {
+    color: #fff;
+}
+
+body.dark-theme #checkout-form input,
+body.dark-theme #checkout-form textarea {
+    background: #2a2a2a;
+    color: #fff;
+    border: 1px solid #444;
+}
+
+body.dark-theme .checkout-item {
+    border-bottom: 1px solid #444;
+}
+
+body.dark-theme .payment-options label {
+    background: #2a2a2a;
+    color: #fff;
+    border-color: #444;
+}
