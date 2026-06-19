@@ -72,6 +72,7 @@ router.put("/:id", authMiddleware, authorizeRoles("admin"), (req, res, next) => 
     next();
 }, updateProduct);
 
+// ✅ Corrected method name: router.delete (not router.Deletee)
 router.delete("/:id", authMiddleware, authorizeRoles("admin"), deleteProduct);
 
 // Fallback
