@@ -50,11 +50,10 @@ html, body {
 
 .desktop-nav #navbar-links {
     display: flex;
-    align-items: center;
-    list-style: none;
-    width: 100%;
     justify-content: center;
+    align-items: center;
     gap: 32px;
+    list-style: none;
 }
 
 
