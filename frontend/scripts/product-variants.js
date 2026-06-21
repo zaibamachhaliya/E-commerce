@@ -28,7 +28,33 @@ function setupVariants(
         !Array.isArray(
             product.variants
         )
+        ||
+        product.variants.length === 0
     ) {
+
+       
+        const variantStockEl =
+            document.getElementById(
+                "variant-stock"
+            );
+
+        if (
+            variantStockEl
+        ) {
+
+            variantStockEl.innerText =
+                Number(
+                    product.stock
+                ) || 0;
+
+            variantStockEl.style.color =
+                Number(
+                    product.stock
+                ) <= 3
+                    ? "red"
+                    : "#088178";
+        }
+
         return;
     }
 
@@ -100,13 +126,19 @@ function updateVariant() {
         return;
     }
 
+    const variantStockEl =
+        document.getElementById(
+            "variant-stock"
+        );
+
     if (
-        window.variantStock
+        variantStockEl
     ) {
-        window.variantStock.innerText =
+
+        variantStockEl.innerText =
             stock;
 
-        window.variantStock.style.color =
+        variantStockEl.style.color =
             stock <= 3
                 ? "red"
                 : "#088178";
@@ -117,10 +149,17 @@ function updateVariant() {
         }
     }
 
+
+    const mainImageEl =
+        document.getElementById(
+            "main-product-image"
+        );
+
     if (
-        window.mainImage
+        mainImageEl
     ) {
-        window.mainImage.src =
+
+        mainImageEl.src =
             AppUtils.defaultImage(
                 currentVariant.image
             );

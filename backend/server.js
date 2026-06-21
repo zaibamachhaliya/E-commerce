@@ -53,6 +53,8 @@ const cartRoutes =
         "./routes/cartRoutes"
     );
 
+const pincodeRoutes = require("./routes/pincodeRoutes");
+
 // app
 const app = express();
 
@@ -267,6 +269,8 @@ app.use(
     "/api/cart",
     cartRoutes
 );
+
+app.use("/api/pincode", pincodeRoutes);
 
 // 404 handler
 app.use((req, res) => {

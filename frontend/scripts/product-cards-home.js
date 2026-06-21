@@ -123,6 +123,15 @@ function createProductCard(
                 </h4>
 
                 <div class="product-actions">
+                    <button
+                        type="button"
+                        class="view-product-btn primary-action"
+                        data-id="${
+                            product.id
+                        }"
+                    >
+                        View
+                    </button>
                     <div class="cart-control" data-id="${product.id}">
                         ${
                             typeof window.buildCartControlHTML === "function"
@@ -130,16 +139,24 @@ function createProductCard(
                                 : `<button type="button" class="add-cart-btn" data-id="${product.id}">Add Cart</button>`
                         }
                     </div>
-
                     <button
                         type="button"
-                        class="wishlist-btn"
+                        class="compare-btn icon-action"
+                        data-id="${product.id}"
+                        aria-label="Compare"
+                        title="Compare"
+                    >
+                        <i class="fas fa-balance-scale"></i>
+                    </button>
+                    <button
+                        type="button"
+                        class="wishlist-btn icon-action"
                         data-id="${product.id}"
                         aria-label="Add to Wishlist"
+                        title="Add to Wishlist"
                     >
                         <i class="${ AppUtils.getWishlist().some(item => String(item.id) === String(product.id)) ? 'fas' : 'far' } fa-heart"></i>
                     </button>
-
                 </div>
             </div>
         </div>
