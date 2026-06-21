@@ -945,3 +945,186 @@ document.addEventListener(
         await loadInitialData();
     }
 );
+
+// Tab Switching
+document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active-admin-tab'));
+        tab.classList.add('active-admin-tab');
+        
+        const target = tab.getAttribute('data-tab');
+        document.querySelectorAll('.admin-section').forEach(sec => sec.style.display = 'none');
+        document.querySelector('.admin-stats').style.display = 'none';
+        
+        if (target === 'dashboard') {
+            document.querySelector('.admin-stats').style.display = 'grid';
+            document.getElementById('section-dashboard').style.display = 'grid';
+            loadAdminDashboard();
+        } else if (target === 'users') {
+            document.getElementById('section-users').style.display = 'block';
+            loadAdminUsers(1);
+        } else if (target === 'products') {
+            document.getElementById('section-products-form').style.display = 'block';
+            document.getElementById('section-products-list').style.display = 'block';
+        } else if (target === 'orders') {
+            document.getElementById('section-orders').style.display = 'block';
+        }
+    });
+});
+
+let revenueChartInstance = null;
+let orderStatusChartInstance = null;
+
+window.loadAdminDashboard = async function() {
+    try {
+        const response = await AppUtils.apiRequest("/admin/dashboard");
+        if (!response.success) return;
+        
+        const data = response.data;
+        // Update stats
+        if (elements.totalOrders) elements.totalOrders.innerText = data.stats.totalOrders;
+        if (elements.totalRevenue) elements.totalRevenue.innerText = AppUtils.formatPrice(data.stats.totalRevenue);
+        if (elements.totalUsers) elements.totalUsers.innerText = data.stats.totalUsers;
+        if (elements.totalProducts) elements.totalProducts.innerText = data.stats.totalProducts;
+
+        // Render Charts
+        const revCtx = document.getElementById('revenueChart');
+        if (revCtx) {
+            if (revenueChartInstance) revenueChartInstance.destroy();
+            revenueChartInstance = new Chart(revCtx, {
+                type: 'line',
+                data: {
+                    labels: data.charts.revenue.map(r => r.date.split('T')[0]),
+                    datasets: [{
+                        label: 'Revenue (₹)',
+                        data: data.charts.revenue.map(r => r.revenue),
+                        borderColor: '#088178',
+                        tension: 0.1,
+                        fill: true,
+                        backgroundColor: 'rgba(8, 129, 120, 0.1)'
+                    }]
+                }
+            });
+        }
+
+        const statusCtx = document.getElementById('orderStatusChart');
+        if (statusCtx) {
+            if (orderStatusChartInstance) orderStatusChartInstance.destroy();
+            orderStatusChartInstance = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.charts.orderStatus.map(s => s.status),
+                    datasets: [{
+                        data: data.charts.orderStatus.map(s => s.count),
+                        backgroundColor: ['#28a745', '#ffc107', '#dc3545', '#17a2b8', '#6c757d']
+                    }]
+                }
+            });
+        }
+    } catch (e) {
+        console.error("Dashboard Load Error", e);
+    }
+};
+
+let currentUsersPage = 1;
+window.loadAdminUsers = async function(page = 1) {
+    currentUsersPage = page;
+    const search = document.getElementById('user-search').value;
+    const status = document.getElementById('user-status-filter').value;
+    
+    try {
+        const response = await AppUtils.apiRequest(`/admin/users?page=${page}&limit=20&search=${search}&status=${status}`);
+        if (!response.success) return;
+        
+        const tbody = document.getElementById('users-table-body');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        
+        response.users.forEach(u => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="checkbox" class="user-select-cb" value="${u.id}"></td>
+                <td>${escapeHTML(u.name)}</td>
+                <td>${escapeHTML(u.email)}</td>
+                <td><span class="badge">${u.role}</span></td>
+                <td><span class="badge ${u.is_active ? 'active' : 'blocked'}">${u.is_active ? 'Active' : 'Blocked'}</span></td>
+                <td>${new Date(u.created_at).toLocaleDateString()}</td>
+                <td>
+                    ${u.role !== 'admin' ? `
+                    <button class="normal" style="padding:4px 8px; font-size:12px; border:none; border-radius:4px; cursor:pointer; background: ${u.is_active ? '#dc3545' : '#28a745'}; color: white;" 
+                            onclick="toggleUserStatus(${u.id}, '${u.is_active ? 'blocked' : 'active'}')">
+                        ${u.is_active ? 'Block' : 'Unblock'}
+                    </button>
+                    ` : ''}
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+        
+    } catch (e) {
+        console.error("Users Load Error", e);
+    }
+};
+
+window.toggleUserStatus = async function(id, newStatus) {
+    if (!confirm(`Are you sure you want to ${newStatus} this user?`)) return;
+    try {
+        const res = await AppUtils.apiRequest(`/admin/users/${id}/status`, {
+            method: 'PATCH',
+            body: JSON.stringify({ status: newStatus })
+        });
+        if (res.success) {
+            AppUtils.notify(res.message, 'success');
+            loadAdminUsers(currentUsersPage);
+        } else {
+            AppUtils.notify(res.message, 'error');
+        }
+    } catch (e) {}
+};
+
+const userSearch = document.getElementById('user-search');
+if (userSearch) userSearch.addEventListener('input', AppUtils.debounce(() => loadAdminUsers(1), 500));
+
+const userStatusFilter = document.getElementById('user-status-filter');
+if (userStatusFilter) userStatusFilter.addEventListener('change', () => loadAdminUsers(1));
+
+window.bulkUserAction = async function(newStatus) {
+    const selected = Array.from(document.querySelectorAll('.user-select-cb:checked')).map(cb => cb.value);
+    if (!selected.length) {
+        AppUtils.notify("Select at least one user", 'error');
+        return;
+    }
+    if (!confirm(`Are you sure you want to ${newStatus} ${selected.length} user(s)?`)) return;
+    
+    try {
+        const res = await AppUtils.apiRequest('/admin/users/bulk-status', {
+            method: 'POST',
+            body: JSON.stringify({ userIds: selected, status: newStatus })
+        });
+        if (res.success) {
+            AppUtils.notify(res.message, 'success');
+            loadAdminUsers(currentUsersPage);
+            document.getElementById('user-select-all').checked = false;
+        } else {
+            AppUtils.notify(res.message, 'error');
+        }
+    } catch (e) {}
+};
+
+const bulkBlockBtn = document.getElementById('user-bulk-block');
+if (bulkBlockBtn) bulkBlockBtn.addEventListener('click', () => bulkUserAction('blocked'));
+
+const bulkUnblockBtn = document.getElementById('user-bulk-unblock');
+if (bulkUnblockBtn) bulkUnblockBtn.addEventListener('click', () => bulkUserAction('active'));
+
+const selectAllCb = document.getElementById('user-select-all');
+if (selectAllCb) {
+    selectAllCb.addEventListener('change', (e) => {
+        document.querySelectorAll('.user-select-cb').forEach(cb => cb.checked = e.target.checked);
+    });
+}
+
+// Ensure the dashboard loads its data on init
+setTimeout(() => {
+    loadAdminDashboard();
+}, 500);
