@@ -48,6 +48,11 @@ const wishlistRoutes =
         "./routes/wishlistRoutes"
     );
 
+const cartRoutes =
+    require(
+        "./routes/cartRoutes"
+    );
+
 // app
 const app = express();
 
@@ -256,6 +261,11 @@ app.use("/api/orders", orderRoutes);
 app.use(
     "/api/wishlist",
     wishlistRoutes
+);
+
+app.use(
+    "/api/cart",
+    cartRoutes
 );
 
 // 404 handler

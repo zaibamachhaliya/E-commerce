@@ -63,7 +63,7 @@ function createProductCard(
         ).join("");
 
     return `
-        <div class="pro fade-in">
+        <div class="pro fade-in" data-id="${product.id}">
             ${
                 product.featured
                     ? `
@@ -123,37 +123,14 @@ function createProductCard(
                 </h4>
 
                 <div class="product-actions">
-                    <button
-                        type="button"
-                        class="view-product-btn"
-                        data-id="${
-                            product.id
-                        }"
-                    >
-                        View
-                    </button>
+                    <div class="cart-control" data-id="${product.id}">
+                        ${
+                            typeof window.buildCartControlHTML === "function"
+                                ? window.buildCartControlHTML(product.id)
+                                : `<button type="button" class="add-cart-btn" data-id="${product.id}">Add Cart</button>`
+                        }
+                    </div>
 
-                    <button
-                        type="button"
-                        class="add-cart-btn"
-                        data-id="${
-                            product.id
-                        }"
-                    >
-                        Add Cart
-                    </button>
-
-                    <button
-    type="button"
-    class="compare-btn"
-    data-id="${
-        product.id
-    }"
->
-    Compare
-</button>
-
-                    
                     <button
                         type="button"
                         class="wishlist-btn"

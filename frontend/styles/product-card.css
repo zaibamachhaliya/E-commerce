@@ -134,6 +134,77 @@ product section
     background: var(--primary-color);
     color: white;
     transition: 0.3s ease;
+    white-space: nowrap;
+}
+
+/* wishlist heart: compact square icon button, not a full-width action */
+.product-actions .wishlist-btn{
+    flex: 0 0 auto;
+    width: 46px;
+    padding: 12px 0;
+    font-size: 16px;
+}
+
+/* cart control: holds either the Add Cart button or the qty counter */
+.product-actions .cart-control{
+    flex: 1;
+    display: flex;
+}
+
+.product-actions .cart-control .add-cart-btn{
+    width: 100%;
+}
+
+/* − qty + counter */
+.product-actions .qty-counter{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--primary-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.product-actions .qty-counter button{
+    flex: 0 0 auto;
+    width: 38px;
+    padding: 12px 0;
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 0;
+}
+
+.product-actions .qty-counter button:hover{
+    background: rgba(255, 255, 255, 0.15);
+    transform: none;
+}
+
+.product-actions .qty-counter .qty-value{
+    flex: 1;
+    text-align: center;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+/* disabled states: out-of-stock button and maxed-out + */
+.product-actions button:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.product-actions button:disabled:hover{
+    transform: none;
+    background: var(--primary-color);
+}
+
+.product-actions .qty-counter button:disabled:hover{
+    background: transparent;
 }
 
 /* product badge */
@@ -187,6 +258,10 @@ product section
 
     .product-actions{
         flex-direction: column;
+    }
+
+    .product-actions .wishlist-btn{
+        width: 100%;
     }
 }
 

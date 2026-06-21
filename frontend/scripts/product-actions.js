@@ -146,6 +146,11 @@ function buildCartProduct() {
 
 // add to cart
 function addProductToCart() {
+    // cart is account-bound: guests must sign in first
+    if (!AppUtils.requireLogin("Please sign in to add items to your cart")) {
+        return;
+    }
+
     const product =
         buildCartProduct();
 
@@ -244,10 +249,15 @@ function buyNow() {
 }
 
 // wishlist
-async function toggleProductWishlist() {
+function toggleProductWishlist() {
     if (
         !currentProduct
     ) {
+        return;
+    }
+
+    // wishlist is account-bound: guests must sign in first
+    if (!AppUtils.requireLogin("Please sign in to use your wishlist")) {
         return;
     }
 
@@ -263,8 +273,6 @@ async function toggleProductWishlist() {
                     currentProduct.id
                 )
         );
-
-    const token = AppUtils.getToken();
 
     if (
         exists
@@ -284,17 +292,6 @@ async function toggleProductWishlist() {
             "Removed from wishlist",
             "info"
         );
-        
-        if (token) {
-            try {
-                await AppUtils.apiRequest("/wishlist/remove", {
-                    method: "POST",
-                    body: JSON.stringify({ productId: currentProduct.id })
-                });
-            } catch (e) {
-                console.error("Failed to remove from wishlist backend:", e);
-            }
-        }
 
     } else {
         wishlist.push({
@@ -318,19 +315,9 @@ async function toggleProductWishlist() {
             "Added to wishlist",
             "success"
         );
-        
-        if (token) {
-            try {
-                await AppUtils.apiRequest("/wishlist/add", {
-                    method: "POST",
-                    body: JSON.stringify({ productId: currentProduct.id })
-                });
-            } catch (e) {
-                console.error("Failed to add to wishlist backend:", e);
-            }
-        }
     }
 
+    // saveWishlist persists locally and syncs the whole list to the backend
     AppUtils.saveWishlist(wishlist);
     
     // Update DOM icon

@@ -48,11 +48,6 @@ const elements = {
     logoutBtn:
         document.getElementById(
             "logout-btn"
-        ),
-
-    googleLogin:
-        document.getElementById(
-            "google-login"
         )
 };
 
@@ -182,22 +177,6 @@ async function clearAuthSession() {
 
         // always clear local session
         AppUtils.clearAuthData();
-
-        AppUtils.setJSON(
-            "socialUser",
-        );
-
-        try {
-
-            await firebase.auth().signOut();
-
-        } catch (firebaseError) {
-
-            console.error(
-                "FIREBASE LOGOUT ERROR:",
-                firebaseError
-            );
-        }
     }
 }
 
@@ -389,6 +368,10 @@ if (
                         response
                     );
 
+                    // pull this account's cart + wishlist into local
+                    // storage so the browser reflects the logged-in user
+                    await AppUtils.loadUserCollections();
+
                     AppUtils.notify(
                         "Login successful!",
                         "success"
@@ -474,29 +457,11 @@ function initializeAuthUI() {
 
     const user = AppUtils.getUser();
 
-    const socialUser =
-        AppUtils.getJSON(
-            "socialUser",
-            null
-        );
-
     if (
         user
-        || socialUser
     ) {
         authLink.innerHTML =
-            socialUser?.image
-                ? `
-                    <img
-                        src="${escapeHTML(
-                            socialUser.image
-                        )}"
-                        alt="profile"
-                        class="nav-profile-image"
-                    >
-                  `
-
-                : `<i class="fas fa-user"></i>`;
+            `<i class="fas fa-user"></i>`;
 
         authLink.href =
             "#";
@@ -629,58 +594,3 @@ document.querySelectorAll(
     );
 });
 
-// google login
-elements.googleLogin?.addEventListener(
-    "click",
-    async () => {
-        try {
-            const result =
-                await auth.signInWithPopup(
-                    googleProvider
-                );
-
-            const user =
-                result.user;
-
-            AppUtils.notify(
-                `Welcome ${user.displayName}!`,
-                "success"
-            );
-
-            localStorage.setItem(
-                "socialUser",
-                JSON.stringify({
-                    name:
-                        user.displayName,
-
-                    email:
-                        user.email,
-
-                    image:
-                        user.photoURL,
-
-                    provider:
-                        "google"
-                })
-            );
-
-            setTimeout(() => {
-                window.location.href =
-                    "index.html";
-
-            }, 1000);
-
-        } catch (error) {
-            console.error(
-                "GOOGLE LOGIN ERROR:",
-                error
-            );
-
-            AppUtils.notify(
-                error.message ||
-                "Google login failed.",
-                "error"
-            );
-        }
-    }
-);
