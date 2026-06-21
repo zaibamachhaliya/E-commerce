@@ -4,6 +4,12 @@
         <img src="assets/images/logo.png" class="logo" alt="AnthropicBots Logo" loading="lazy">
     </a>
 
+    <!-- Search Autocomplete Container -->
+    <div class="search-container" style="position: relative; margin-right: 16px;">
+        <input type="text" id="searchInput" placeholder="Search products..." autocomplete="off" class="search-input">
+        <div id="suggestionsDropdown" class="suggestions-dropdown" style="display: none;"></div>
+    </div>
+
     <!-- Desktop Navigation -->
     <nav class="desktop-nav">
         <ul id="navbar-links">
@@ -43,23 +49,18 @@
                     <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
                 </div>
             </li>
-            
 
- <li class="theme-toggle-item">
-    <button id="theme-toggle" aria-label="Toggle theme">
-        <span id="theme-icon">🌙</span>
-    </button>
-
- </li>
- 
+            <li class="theme-toggle-item">
+                <button id="theme-toggle" aria-label="Toggle theme">
+                    <span id="theme-icon">🌙</span>
+                </button>
+            </li>
         </ul>
     </nav>
 
     <!-- Mobile Menu Button -->
     <button id="mobile-menu-btn" aria-label="Toggle Navigation">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
+       <i class="fas fa-bars"></i>
     </button>
 
     <!-- Mobile Menu Overlay -->
