@@ -106,7 +106,11 @@ const updateUserStatus = async (adminId, targetId, status, ip, userAgent) => {
     try {
         await connection.beginTransaction();
         
-        await connection.query(`UPDATE users SET is_active = ? WHERE id = ?`, [status === 'active' ? 1 : 0, targetId]);
+        const [result] = await connection.query(`UPDATE users SET is_active = ? WHERE id = ?`, [status === 'active' ? 1 : 0, targetId]);
+        
+        if (result.affectedRows === 0) {
+            throw new Error("User not found");
+        }
         
         await logAudit(
             connection, 
@@ -135,7 +139,11 @@ const bulkUpdateUserStatus = async (adminId, targetIds, status, ip, userAgent) =
         
         if (safeArray(targetIds).length > 0) {
             const placeholders = targetIds.map(() => '?').join(',');
-            await connection.query(`UPDATE users SET is_active = ? WHERE id IN (${placeholders})`, [status === 'active' ? 1 : 0, ...targetIds]);
+            const [result] = await connection.query(`UPDATE users SET is_active = ? WHERE id IN (${placeholders})`, [status === 'active' ? 1 : 0, ...targetIds]);
+            
+            if (result.affectedRows === 0) {
+                throw new Error("No users found to update");
+            }
             
             for (const id of targetIds) {
                 await logAudit(
