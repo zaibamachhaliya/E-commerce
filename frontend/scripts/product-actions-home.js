@@ -214,6 +214,8 @@ async function toggleWishlist(
                 === String(product.id)
         );
 
+    const user = AppUtils.getUser();
+
     if (
         exists
     ) {
@@ -228,6 +230,17 @@ async function toggleWishlist(
             "Removed from wishlist",
             "info"
         );
+        
+        if (user) {
+            try {
+                await AppUtils.apiRequest("/wishlist/remove", {
+                    method: "POST",
+                    body: JSON.stringify({ productId: product.id })
+                });
+            } catch (e) {
+                console.error("Failed to remove from wishlist backend:", e);
+            }
+        }
     } else {
         wishlist.push(
             product
@@ -237,6 +250,17 @@ async function toggleWishlist(
             "Added to wishlist",
             "success"
         );
+        
+        if (user) {
+            try {
+                await AppUtils.apiRequest("/wishlist/add", {
+                    method: "POST",
+                    body: JSON.stringify({ productId: product.id })
+                });
+            } catch (e) {
+                console.error("Failed to add to wishlist backend:", e);
+            }
+        }
     }
 
     // saveWishlist persists locally and syncs the whole list to the backend

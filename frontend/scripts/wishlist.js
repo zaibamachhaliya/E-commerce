@@ -200,14 +200,84 @@ async function removeWishlist(
         "Removed from wishlist",
         "success"
     );
+
+    const user =
+        AppUtils.getUser();
+
+    if (
+        user
+    ) {
+        try {
+            await AppUtils.apiRequest(
+                "/wishlist/remove",
+                {
+                    method: "POST",
+                    body:
+                        JSON.stringify({
+                            productId:
+                                product.id
+                        })
+                }
+            );
+
+        } catch (error) {
+            console.error(
+                "WISHLIST REMOVE ERROR:",
+                error
+            );
+        }
+    }
 }
 
 
+    } else {
+        cart.push(
+            item
+        );
+    }
+
+    AppUtils.saveCart(
+        cart
+    );
+
+    AppUtils.notify(
+        "Added to cart 🛍️",
+        "success"
+    );
+
+    const user =
+        AppUtils.getUser();
+
+    if (
+        user
+    ) {
+        try {
+            await AppUtils.apiRequest(
+                "/cart/add",
+                {
+                    method: "POST",
+                    body:
+                        JSON.stringify(
+                            item
+                        )
+                }
+            );
+        } catch (error) {
+            console.error(
+                "CART ADD ERROR:",
+                error
+            );
+        }
+    }
+    
+    // Remove from wishlist
+    await removeWishlist(index);
+}
 
 // init
 async function initWishlist() {
-    const token = AppUtils.getToken();
-    if (token) {
+    const user = AppUtils.getUser();
+    if (user) {
         try {
             const response = await AppUtils.apiRequest("/wishlist");
             if (response.success && response.wishlist) {

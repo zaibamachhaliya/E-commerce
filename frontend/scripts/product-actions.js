@@ -230,6 +230,10 @@ function addProductToCart() {
         renderCartDrawer();
     }
 
+    if (window.Recommendations && typeof window.Recommendations.postInteraction === 'function') {
+        window.Recommendations.postInteraction(product.id, "cart_add");
+    }
+
     AppUtils.notify(
         "Added to cart",
         "success"
@@ -274,6 +278,8 @@ function toggleProductWishlist() {
                 )
         );
 
+    const user = AppUtils.getUser();
+
     if (
         exists
     ) {
@@ -292,6 +298,17 @@ function toggleProductWishlist() {
             "Removed from wishlist",
             "info"
         );
+        
+        if (user) {
+            try {
+                await AppUtils.apiRequest("/wishlist/remove", {
+                    method: "POST",
+                    body: JSON.stringify({ productId: currentProduct.id })
+                });
+            } catch (e) {
+                console.error("Failed to remove from wishlist backend:", e);
+            }
+        }
 
     } else {
         wishlist.push({
@@ -315,6 +332,21 @@ function toggleProductWishlist() {
             "Added to wishlist",
             "success"
         );
+        
+        if (user) {
+            try {
+                await AppUtils.apiRequest("/wishlist/add", {
+                    method: "POST",
+                    body: JSON.stringify({ productId: currentProduct.id })
+                });
+            } catch (e) {
+                console.error("Failed to add to wishlist backend:", e);
+            }
+        }
+
+        if (window.Recommendations && typeof window.Recommendations.postInteraction === 'function') {
+            window.Recommendations.postInteraction(currentProduct.id, "wishlist_add");
+        }
     }
 
     // saveWishlist persists locally and syncs the whole list to the backend
