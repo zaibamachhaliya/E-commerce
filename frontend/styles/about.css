@@ -292,3 +292,46 @@ body.dark-theme .about-cta-btn {
     background: var(--primary-color);
     color: #fff;
 }
+
+/* ── DARK MODE MISSING FIXES ── */
+body.dark-theme #about-stats {
+    background: #121212 !important;
+}
+
+body.dark-theme .stat-card {
+    background: #1e1e2e !important;
+    border-color: #333 !important;
+}
+
+body.dark-theme .stat-card h3 {
+    color: var(--primary-color) !important;
+}
+
+body.dark-theme .stat-card p {
+    color: #aaaaaa !important;
+}
+
+body.dark-theme #about-head {
+    background: #121212 !important;
+}
+
+body.dark-theme .about-marquee-replace {
+    color: var(--primary-color) !important;
+}
+
+body.dark-theme #about-app {
+    background: #121212 !important;
+}
+
+body.dark-theme #feature {
+    background: #121212 !important;
+}
+
+body.dark-theme .fe-box {
+    background: #1e1e2e !important;
+    border-color: #333 !important;
+}
+
+body.dark-theme .fe-box h6 {
+    color: #cccccc !important;
+}
