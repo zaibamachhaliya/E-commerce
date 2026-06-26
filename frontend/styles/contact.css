@@ -521,3 +521,53 @@ body.dark-theme div[class*="feedback"] {
                 0 0 30px rgba(255, 255, 255, 0.6), 
                 0 0 60px rgba(255, 255, 255, 0.25) !important;
 }
+
+/* ── DARK MODE MISSING FIXES ── */
+body.dark-theme #contact-details {
+    background: #121212 !important;
+}
+
+/* feedback-container ka hardcoded white override */
+body.dark-theme .feedback-container,
+body.dark-theme section.feedback-container,
+body.dark-theme div[class*="feedback"] {
+    background: linear-gradient(145deg, #1a1a2e, #16162a) !important;
+    background-color: #1a1a2e !important;
+    border-color: #3a3a5a !important;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4),
+                0 0 25px rgba(168,85,247,0.2) !important;
+}
+
+body.dark-theme .form-left h2,
+body.dark-theme .ratings-heading,
+body.dark-theme .ratings-right h2 {
+    color: #ffffff !important;
+}
+
+body.dark-theme .metric-question,
+body.dark-theme .metric-row span {
+    color: #cccccc !important;
+}
+
+body.dark-theme .metric-controls > i.fal,
+body.dark-theme .metric-controls > i[class*="fa-"] {
+    color: #aaaaaa !important;
+}
+
+body.dark-theme .form-left input,
+body.dark-theme .form-left textarea {
+    background: #2a2a3e !important;
+    background-color: #2a2a3e !important;
+    border-color: #444 !important;
+    color: #f0f0f0 !important;
+}
+
+body.dark-theme .form-left input::placeholder,
+body.dark-theme .form-left textarea::placeholder {
+    color: #888 !important;
+}
+
+body.dark-theme #form-details {
+    background: #0d0d0d !important;
+    border-color: #2a2a2a !important;
+}
