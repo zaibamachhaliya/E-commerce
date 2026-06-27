@@ -224,6 +224,8 @@ app.use("/api/auth/login", authLimiter);
 
 app.use("/api/auth/signup", authLimiter);
 
+app.use("/api/auth/forgot-password", authLimiter);
+
 // health route
 app.get("/health", (req, res) => {
   return res.status(200).json({
