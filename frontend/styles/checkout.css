@@ -178,22 +178,33 @@
     margin-bottom: 20px;
 }
 
-#checkout-form button{
+
+.submit-btn {
     width: 100%;
     background: #088178;
     color: #fff;
     border: none;
-    padding: 15px;
-    border-radius: 6px;
+    padding: 16px 20px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
-    transition: 0.3s ease;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    margin-top: 25px;
+    box-shadow: 0 4px 14px rgba(8, 129, 120, 0.3);
+    box-sizing: border-box;
 }
 
-#checkout-form button:hover{
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+.submit-btn:hover {
+    background: #06655e;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(8, 129, 120, 0.4);
 }
+
+.submit-btn:active {
+    transform: translateY(-1px);
+} 
+
 
 .checkout-item{
     display: flex;
