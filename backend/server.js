@@ -1,5 +1,5 @@
 const express = require("express");
-
+const helmetMiddleware = require("./middleware/helmetMiddleware");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
@@ -7,7 +7,6 @@ const dotenv = require("dotenv");
 
 const rateLimit = require("express-rate-limit");
 
-const helmet = require("helmet");
 
 const routes = require("./routes/index")
 
@@ -57,49 +56,7 @@ app.set("trust proxy", 1);
 app.disable("x-powered-by");
 
 // security headers
-app.use(
-  helmet({
-    crossOriginEmbedderPolicy: false,
-
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-
-        scriptSrc: [
-          "'self'",
-
-          "'unsafe-inline'",
-
-          "https://www.gstatic.com",
-
-          "https://apis.google.com",
-        ],
-
-        styleSrc: [
-          "'self'",
-
-          "'unsafe-inline'",
-
-          "https://fonts.googleapis.com",
-
-          "https://cdnjs.cloudflare.com",
-        ],
-
-        fontSrc: [
-          "'self'",
-
-          "https://fonts.gstatic.com",
-
-          "https://cdnjs.cloudflare.com",
-        ],
-
-        imgSrc: ["'self'", "data:", "https:"],
-
-        connectSrc: ["'self'", FRONTEND_URL],
-      },
-    },
-  }),
-);
+app.use(helmetMiddleware);
 
 // allowed origins
 const allowedOrigins = [
