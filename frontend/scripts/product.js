@@ -959,4 +959,32 @@ async function fetchProduct() {
         }
     );
 
+// ========================================
+// Back to Top Button (Issue #345)
+// ========================================
+function initBackToTop() {
+    const backToTopBtn = document.getElementById('back-to-top-btn');
+    if (!backToTopBtn) return;
+
+    // Show/hide button based on scroll position
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            backToTopBtn.classList.add('show');
+            backToTopBtn.style.display = 'flex';
+        } else {
+            backToTopBtn.classList.remove('show');
+            backToTopBtn.style.display = 'none';
+        }
+    });
+
+    // Smooth scroll to top on click
+    backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// Initialize after DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    initBackToTop();
+});
 })();
