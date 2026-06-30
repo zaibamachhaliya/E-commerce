@@ -7,6 +7,8 @@ const dotenv = require("dotenv");
 
 const rateLimit = require("express-rate-limit");
 
+const helmet = require("helmet");
+const corsMiddleware = require("./middleware/corsMiddleware");
 
 const routes = require("./routes/index")
 const authLimiter = require("./middleware/authLimiter");
@@ -66,32 +68,7 @@ const allowedOrigins = [
 initSocket(server, allowedOrigins);
 
 // cors
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // allow non-browser requests
-      if (!origin) {
-        return callback(null, true);
-      }
-
-      const isAllowed =
-        allowedOrigins.includes(origin) ||
-        /^http:\/\/172\.\d+\.\d+\.\d+:\d+$/.test(origin);
-
-      if (isAllowed) {
-        return callback(null, true);
-      }
-
-      return callback(new Error("CORS not allowed"));
-    },
-
-    credentials: true,
-
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-
-    allowedHeaders: ["Content-Type", "Authorization"],
-  }),
-);
+app.use(corsMiddleware);
 
 // body parsers
 app.use(
