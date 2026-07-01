@@ -73,8 +73,70 @@ const loadScript = (
     );
 };
 
+const loadStylesheet = (
+    href
+) => {
+
+    return new Promise(
+        (
+            resolve,
+            reject
+        ) => {
+
+            if (
+                document.querySelector(
+                    `link[href="${href}"]`
+                )
+            ) {
+                resolve();
+                return;
+            }
+
+            const stylesheet =
+                document.createElement(
+                    "link"
+                );
+
+            stylesheet.rel =
+                "stylesheet";
+
+            stylesheet.href =
+                href;
+
+            stylesheet.onload =
+                resolve;
+
+            stylesheet.onerror =
+                reject;
+
+            document.head.appendChild(
+                stylesheet
+            );
+        }
+    );
+};
+
+const initializeCustomCursor = async () => {
+    await loadStylesheet(
+        "styles/custom-cursor.css"
+    );
+
+    await loadScript(
+        "scripts/custom-cursor.js"
+    );
+};
+
 // initialize components
 async function initializeComponents() {
+    try {
+        await initializeCustomCursor();
+    } catch (error) {
+        console.error(
+            "Failed to load custom cursor:",
+            error
+        );
+    }
+
     const loadTasks = [
         loadComponent(
             "navbar",

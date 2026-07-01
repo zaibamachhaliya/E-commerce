@@ -94,8 +94,28 @@
 <body>
 
     <!-- Navbar -->
-
     <div id="navbar"></div>
+
+    <!-- ==================== BREADCRUMB ==================== -->
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+        <ol class="breadcrumb-list">
+            <li class="breadcrumb-item">
+                <a href="index.html">Home</a>
+                <span class="breadcrumb-separator">›</span>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="shop.html">Shop</a>
+                <span class="breadcrumb-separator">›</span>
+            </li>
+            <li class="breadcrumb-item" id="breadcrumb-category" style="display: none;">
+                <a href="#" id="breadcrumb-category-link"></a>
+                <span class="breadcrumb-separator">›</span>
+            </li>
+            <li class="breadcrumb-item active" id="breadcrumb-product-name">
+                Product
+            </li>
+        </ol>
+    </nav>
 
     <!-- Product Details -->
 
@@ -753,6 +773,11 @@
 
     <!-- Footer -->
     <div id="footer"></div>
+
+    <!-- Back to Top Button -->
+<button id="back-to-top-btn" class="back-to-top-btn" aria-label="Back to Top" style="display: none;">
+    <i class="fas fa-arrow-up"></i>
+</button>
 
     <!-- Core Scripts -->
     <script

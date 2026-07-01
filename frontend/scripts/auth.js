@@ -906,36 +906,43 @@ function evaluatePasswordStrength(password) {
     let color = 'strength-weak';
     let percent = 25;
     if (score === 4) { level = 'Strong'; color = 'strength-strong'; percent = 100; }
-    else if (score === 3) { level = 'Medium'; color = 'strength-medium'; percent = 70; }
-    else if (score === 2) { level = 'Weak'; color = 'strength-weak'; percent = 45; }
-    else { percent = 20; }
+    else if (score === 3) { level = 'Medium'; color = 'strength-medium'; percent = 60; }
+    else if (score === 2) { level = 'Weak'; color = 'strength-weak'; percent = 30; }
+    else { percent = 30; }
 
     return { level, color, percent, tips };
 }
 
 function updatePasswordStrength() {
     const passwordInput = document.getElementById('signup-password');
+    const container = document.getElementById('password-strength-container');
     const fill = document.getElementById('password-strength-fill');
     const text = document.getElementById('password-strength-text');
     const tips = document.getElementById('password-strength-tips');
     const signupBtn = document.getElementById('signup-btn');
 
-    if (!passwordInput || !fill || !text || !tips) return;
+    if (!passwordInput || !fill || !text || !tips || !container) return;
 
     const password = passwordInput.value;
-    const result = evaluatePasswordStrength(password);
 
-    fill.style.width = result.percent + '%';
-    fill.className = result.color;
-    text.textContent = result.level;
-    text.style.color = result.level === 'Strong' ? '#28a745' : result.level === 'Medium' ? '#ffa500' : '#ff4d4d';
-
+    // Hide entire container when field is empty
     if (password.length === 0) {
+        container.style.display = 'none';
         tips.textContent = '';
         if (signupBtn) signupBtn.disabled = true;
         return;
     }
 
+    // Show container once user starts typing
+    container.style.display = 'block';
+
+    const result = evaluatePasswordStrength(password);
+
+    fill.style.width = result.percent + '%';
+    fill.className = result.color;
+    text.textContent = result.level;
+    //text.style.color = result.level === 'Strong' ? '#28a745' : result.level === 'Medium' ? '#ffa500' : '#ff4d4d';
+    text.className = result.color;
     tips.textContent = result.tips.join(' • ');
     if (signupBtn) signupBtn.disabled = (result.level === 'Weak');
 }
@@ -945,7 +952,5 @@ document.addEventListener('DOMContentLoaded', function() {
     const passwordInput = document.getElementById('signup-password');
     if (passwordInput) {
         passwordInput.addEventListener('input', updatePasswordStrength);
-        // Initial check
-        updatePasswordStrength();
     }
 });

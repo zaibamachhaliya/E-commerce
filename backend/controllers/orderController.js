@@ -162,9 +162,7 @@ const createOrder =
             return res.status(500)
                 .json({
                     success: false,
-                    message:
-                        error.message
-                        || "Failed to create order"
+                    message: "Failed to create order"
                 });
         } finally {
             if (connection) {
