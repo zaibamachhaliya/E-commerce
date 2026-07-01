@@ -95,7 +95,8 @@ const createOrderService = async (connection, orderData) => {
         if (promo_code) {
             const promoValidation = await validatePromo(promo_code, calculatedTotal);
             if (!promoValidation.valid) {
-                throw new Error(`Promo Code Error: ${promoValidation.message}`);
+                console.error("Promo validation failed:",promoValidation.message);
+                throw new Error("Invalid promo code.");
             }
             discountAmount = calculateDiscount(
                 promoValidation.promo,
