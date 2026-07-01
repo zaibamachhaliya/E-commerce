@@ -28,6 +28,13 @@ const loadComponent = async (id, file) => {
         const data = await response.text();
         element.innerHTML = data;
 
+        if (
+            id === "navbar" &&
+            element.dataset.hideGlobalSearch === "true"
+        ) {
+            element.querySelector(".search-container")?.remove();
+        }
+
         return true;
 
     } catch (error) {
