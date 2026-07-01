@@ -207,7 +207,7 @@ const createOrderService = async (connection, orderData) => {
             }
         }
 
-        await connection.commit();
+        // await connection.commit();
 
         return {
             success: true,
@@ -216,7 +216,7 @@ const createOrderService = async (connection, orderData) => {
             items: validatedItems,
         };
     } catch (error) {
-        await connection.rollback();
+        // await connection.rollback();
         throw error;
     }
 };
